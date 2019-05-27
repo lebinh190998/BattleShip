@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.Random;
 
 public class BattleShips {
@@ -14,7 +13,6 @@ public class BattleShips {
 
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
-        System.out.println(ThreadLocalRandom.current().nextInt(1, 20 + 1));
 
 
         //Step 1 – Create the ocean map
@@ -93,23 +91,25 @@ public class BattleShips {
         System.out.println("\nDeploy your ships:");
 
         //Deploying five ships for player
-        BattleShips.playerShips = 5;
+        BattleShips.playerShips = 1;
         for (int i = 1; i <= BattleShips.playerShips; i++) {
             System.out.print("Enter X coordinate for your " + i + " ship: ");
             int x = input.nextInt() -1;
             System.out.print("Enter Y coordinate for your " + i + " ship: ");
             int y = input.nextInt() -1;
+            Random randomGenerator = new Random();
+            int length = randomGenerator.nextInt(3) + 3;
 
-            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (grid[x][y] == "#"))
+            if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
             {
-                for(int l = 0; l < 5; l++){
-                    grid[x][y+l] = "@";
+                for(int l = 0; l < length; l++){
+                    grid[y][x+l] = "@";
                 }
             }
-            else if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && grid[x][y] == "@")
+            else if((x >= 0 && x < numCols) && (y >= 0 && y < numRows) && grid[y][x] == "@")
                 System.out.println("You can't place two or more ships on the same location");
 
-            else if((x < 0 || x >= numRows) || (y < 0 || y >= numCols))
+            else if((x < 0 || x >= numCols-length) || (y < 0 || y >= numRows))
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
         }
         printOceanMap();
@@ -122,13 +122,15 @@ public class BattleShips {
         //Deploying five ships for computer
         BattleShips.computerShips = 5;
         for (int i = 1; i <= BattleShips.computerShips; i++) {
-            int x = (int)(Math.random() * 10);
-            int y = (int)(Math.random() * 10);
-            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (grid[x][y] == " "))
+            Random randomGenerator = new Random();
+            int x = randomGenerator.nextInt(60);
+            int y = randomGenerator.nextInt(20);
+            int length = randomGenerator.nextInt(3) + 3;
+            if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
             {
-                grid[x][y] =   "x";
-                System.out.println(i + ". ship DEPLOYED");
-                i++;
+                for(int l = 0; l < length; l++){
+                    grid[y][x+l] = "x";
+                }
             }
         }
         printOceanMap();
