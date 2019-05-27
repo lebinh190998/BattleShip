@@ -8,6 +8,7 @@ public class BattleShips {
     public static int computerShips;
     public static String[][] grid = new String[numRows][numCols];
     public static int[][] missedGuesses = new int[numRows][numCols];
+    public static int[][] shipPosition = new int[numRows][numCols];
 
     public static void main(String[] args){
 
@@ -103,6 +104,7 @@ public class BattleShips {
             if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
             {
                 for(int l = 0; l < length; l++){
+                    shipPosition[y][x+l] = 1;
                     grid[y][x+l] = "@";
                 }
             }
@@ -120,15 +122,18 @@ public class BattleShips {
         System.out.println("\nComputer is deploying ships");
 
         //Deploying five ships for computer
-        BattleShips.computerShips = 5;
+        BattleShips.computerShips = 1;
         for (int i = 1; i <= BattleShips.computerShips; i++) {
             Random randomGenerator = new Random();
-            int x = randomGenerator.nextInt(60);
-            int y = randomGenerator.nextInt(20);
+            //int x = randomGenerator.nextInt(60);
+            //int y = randomGenerator.nextInt(20);
+            int x = 1;
+            int y = 1;
             int length = randomGenerator.nextInt(3) + 3;
             if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
             {
                 for(int l = 0; l < length; l++){
+                    shipPosition[y][x+l] = 2;
                     grid[y][x+l] = "x";
                 }
             }
@@ -156,27 +161,27 @@ public class BattleShips {
             x = input.nextInt() -1;
             System.out.print("Enter Y coordinate: ");
             y = input.nextInt() -1;
-            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols)) //valid guess
+            if ((x >= 0 && x < numCols) && (y >= 0 && y < numRows)) //valid guess
             {
-                if (grid[x][y] == "x") //if computer ship is already there; computer loses ship
+                if (grid[y][x] == "x") //if computer ship is already there; computer loses ship
                 {
                     System.out.println("Boom! You sunk the ship!");
-                    grid[x][y] = "!"; //Hit mark
+                    grid[y][x] = "!"; //Hit mark
                     --BattleShips.computerShips;
                 }
-                else if (grid[x][y] == "@") {
+                else if (grid[y][x] == "@") {
                     System.out.println("Oh no, you sunk your own ship :(");
-                    grid[x][y] = "x";
+                    grid[y][x] = "x";
                     --BattleShips.playerShips;
                 }
-                else if (grid[x][y] == "#") {
+                else if (grid[y][x] == "#") {
                     System.out.println("Sorry, you missed");
-                    grid[x][y] = " ";
+                    grid[y][x] = " ";
                 }
             }
-            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols))  //invalid guess
+            else if ((x < 0 || x >= numCols) || (y < 0 || y >= numRows))  //invalid guess
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
-        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
+        }while((x < 0 || x >= numCols) || (y < 0 || y >= numRows));  //keep re-prompting till valid guess
     }
 
 
@@ -186,30 +191,31 @@ public class BattleShips {
         //Guess co-ordinates
         int x = -1, y = -1;
         do {
-            x = (int)(Math.random() * 10);
-            y = (int)(Math.random() * 10);
-            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols)) //valid guess
+            Random randomGenerator = new Random();
+            x = randomGenerator.nextInt(60);
+            y = randomGenerator.nextInt(20);
+            if ((x >= 0 && x < numCols) && (y >= 0 && y < numRows)) //valid guess
             {
-                if (grid[x][y] == "@") //if player ship is already there; player loses ship
+                if (grid[y][x] == "@") //if player ship is already there; player loses ship
                 {
                     System.out.println("The Computer sunk one of your ships!");
-                    grid[x][y] = "x";
+                    grid[y][x] = "x";
                     --BattleShips.playerShips;
-                    ++BattleShips.computerShips;
                 }
-                else if (grid[x][y] == "x") {
+                else if (grid[y][x] == "x") {
                     System.out.println("The Computer sunk one of its own ships");
-                    grid[x][y] = "!";
+                    grid[y][x] = "!";
+                    --BattleShips.computerShips;
                 }
-                else if (grid[x][y] == " ") {
+                else if (grid[y][x] == "#") {
                     System.out.println("Computer missed");
 
                     //Saving missed guesses for computer
-                    if(missedGuesses[x][y] != 1)
-                        missedGuesses[x][y] = 1;
+                    if(missedGuesses[y][x] != 3)
+                        missedGuesses[y][x] = 3;
                 }
             }
-        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
+        }while((x < 0 || x >= numCols) || (y < 0 || y >= numRows));  //keep re-prompting till valid guess
     }
 
 
@@ -259,10 +265,10 @@ public class BattleShips {
                     }
                 }
                 else if (j == grid[i].length - 1){
-                    System.out.print(grid[i][j] + "|");
+                    System.out.print(grid[i][j]=="x"?"#":grid[i][j] + "|");
                 }
                 else{
-                    System.out.print(grid[i][j]);
+                    System.out.print(grid[i][j]=="x"?"#":grid[i][j]);
                 }
             }
             System.out.println();
