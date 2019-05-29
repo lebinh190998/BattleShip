@@ -12,6 +12,8 @@ public class BattleShips {
     public static int potions;
     public static ArrayList<String> remainingTraps = new ArrayList<String>();
     public static ArrayList<Integer> remainingPotions = new ArrayList<Integer>();
+    public static ArrayList<String> remainingPlayerShips = new ArrayList<String>();
+    public static ArrayList<String> remainingComputerShips = new ArrayList<String>();
     public static String[][] grid = new String[numRows][numCols];
     public static int[][] missedGuesses = new int[numRows][numCols];
     public static int[][] playerShipPosition = new int[numRows][numCols];
@@ -43,7 +45,7 @@ public class BattleShips {
         //Step 4 Battle
         do {
             Battle();
-        }while(BattleShips.playerShips != 0 && BattleShips.computerShips != 0);
+        }while((BattleShips.playerShips != 0 && BattleShips.computerShips != 0) && (BattleShips.playerLife != 0 && BattleShips.computerLife != 0));
 
         //Step 5 - Game over
         gameOver();
@@ -122,6 +124,8 @@ public class BattleShips {
                     playerShipPosition[x][y+l] = i;
                     grid[x][y+l] = "@";
                 }
+                Integer obj = new Integer(i);
+                BattleShips.remainingPlayerShips.add(obj.toString());
             }
             else if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && grid[x][y] == "@")
                 System.out.println("You can't place two or more ships on the same location");
@@ -130,6 +134,7 @@ public class BattleShips {
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
         }
         printOceanMap();
+        System.out.println("Remaining Play Ships" + BattleShips.remainingPlayerShips);
     }
 
 
@@ -150,6 +155,8 @@ public class BattleShips {
                     computerShipPosition[x][y+l] = i;
                     grid[x][y+l] = "x";
                 }
+                Integer obj = new Integer(i);
+                BattleShips.remainingComputerShips.add(obj.toString());
                 i++;
             }
         }
@@ -232,7 +239,8 @@ public class BattleShips {
                     System.out.println("Boom! You sunk the ship!");
                     --BattleShips.computerShips;
                 }
-                else if (grid[x][y] == "@") {
+                else if (grid[x][y] == "@") 
+                {
                     for(int i = 1; i <= BattleShips.playerShips; i++){
                         if(playerShipPosition[x][y] == i){
                            revealShip(i, "player");
@@ -241,7 +249,8 @@ public class BattleShips {
                     System.out.println("Oh no, you sunk your own ship :(");
                     --BattleShips.playerShips;
                 }
-                else if (grid[x][y] == "T") {
+                else if (grid[x][y] == "T") 
+                {
                     int type = randomGenerator.nextInt(2) + 1;
                     if(type == 1){
                         for(int i = 1; i <= BattleShips.traps; i++){
@@ -261,9 +270,10 @@ public class BattleShips {
                         BattleShips.playerLife -= 2;
                     }
                 }
-                else if (grid[x][y] == "P") {
+                else if (grid[x][y] == "P") 
+                {
                     //int type = randomGenerator.nextInt(3) + 1;
-                    int type = 2;
+                    int type = 3;
                     if(type == 1){
                         for(int i = 1; i <= BattleShips.potions; i++){
                             if(potionsPosition[x][y] == i){
@@ -291,6 +301,11 @@ public class BattleShips {
                             }  
                         }
                         System.out.println("Ship Reveal Potion");
+                        if(BattleShips.remainingComputerShips.size() > 0){
+                            revealShip(Integer.parseInt(BattleShips.remainingComputerShips.get(0)), "computer");
+                        }else{
+                            System.out.println("No more ship to reveal");
+                        }
                     }
                 }
                 else if (grid[x][y] == "#") {
@@ -325,7 +340,8 @@ public class BattleShips {
                     System.out.println("The Computer sunk one of your ships!");
                     --BattleShips.playerShips;
                 }
-                else if (grid[x][y] == "x") {
+                else if (grid[x][y] == "x") 
+                {
                     for(int i = 1; i <= BattleShips.playerShips; i++){
                         if(computerShipPosition[x][y] == i){
                            revealShip(i, "computer");
@@ -334,7 +350,8 @@ public class BattleShips {
                     System.out.println("The Computer sunk one of its own ships");
                     --BattleShips.computerShips;
                 }
-                else if (grid[x][y] == "T") {
+                else if (grid[x][y] == "T") 
+                {
                     int type = randomGenerator.nextInt(2) + 1;
                     if(type == 1){
                         for(int i = 1; i <= BattleShips.traps; i++){
@@ -354,20 +371,47 @@ public class BattleShips {
                         BattleShips.playerLife -= 2;
                     }
                 }
-                else if (grid[x][y] == "P") {
-                    for(int i = 1; i <= BattleShips.potions; i++){
-                        if(potionsPosition[x][y] == i){
-                           revealPotion(i);
-                        }  
+                else if (grid[x][y] == "P") 
+                {
+                    int type = randomGenerator.nextInt(3) + 1;
+                    if(type == 1){
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }  
+                        }
+                        System.out.println("Life Saver Potion, your health increase by 1");
+                        ++BattleShips.playerLife;
+                    }else if(type == 2){
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }
+                        }
+                        System.out.println("Trap Reveal Potion");
+                        if(BattleShips.remainingTraps.size() > 0){
+                            revealTrap(Integer.parseInt(BattleShips.remainingTraps.get(0)));
+                        }else{
+                            System.out.println("No more trap to reveal");
+                        }
+                    }else{
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }  
+                        }
+                        System.out.println("Ship Reveal Potion");
+                        if(BattleShips.remainingComputerShips.size() > 0){
+                            revealShip(Integer.parseInt(BattleShips.remainingComputerShips.get(0)), "computer");
+                        }else{
+                            System.out.println("No more ship to reveal");
+                        }
                     }
-                    System.out.println("Great, you got a potion");
                 }
-                else if (grid[x][y] == "#") {
+                else if (grid[x][y] == "#") 
+                {
                     System.out.println("Computer missed");
-
-                    //Saving missed guesses for computer
-                    if(missedGuesses[x][y] != 3)
-                        missedGuesses[x][y] = 3;
+                    grid[x][y] = " ";
                 }
             }
         }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
@@ -385,6 +429,7 @@ public class BattleShips {
     }
 
     public static void revealShip(int shipNo, String type){
+        Integer obj = new Integer(shipNo);
         if(type == "player"){
             for(int i = 0; i < playerShipPosition.length; i++) {
                 for (int j = 0; j < playerShipPosition[i].length; j++) {
@@ -397,6 +442,8 @@ public class BattleShips {
                 }
                 System.out.println();
             }
+            BattleShips.remainingPlayerShips.remove(obj.toString());
+            System.out.println("remaining Player Ships"+ BattleShips.remainingPlayerShips);
         }
         else {
             for(int i = 0; i < computerShipPosition.length; i++) {
@@ -410,6 +457,8 @@ public class BattleShips {
                 }
                 System.out.println();
             }
+            BattleShips.remainingComputerShips.remove(obj.toString());
+            System.out.println("remaining Computer Ships"+ BattleShips.remainingComputerShips);
         }
     }
 
@@ -419,14 +468,14 @@ public class BattleShips {
             for (int j = 0; j < trapsPosition[i].length; j++) {
                 if (trapsPosition[i][j] == trapNo){
                     grid[i][j] = " ";
-                    BattleShips.remainingTraps.remove(obj.toString());
-                    System.out.println("remaining traps"+ BattleShips.remainingTraps);
                 }
                 else{
                 }
             }
             System.out.println();
         }
+        BattleShips.remainingTraps.remove(obj.toString());
+        System.out.println("remaining traps"+ BattleShips.remainingTraps);
     }
 
     public static void revealPotion(int potionNo){
