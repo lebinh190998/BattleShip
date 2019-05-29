@@ -6,9 +6,18 @@ public class BattleShips {
     public static int numCols = 60;
     public static int playerShips;
     public static int computerShips;
+    public static int playerLife = 15;
+    public static int computerLife = 15;
+    public static int traps;
+    public static int potions;
+    public static ArrayList<Integer> remainingTraps = new ArrayList<Integer>();
+    public static ArrayList<Integer> remainingPotions = new ArrayList<Integer>();
     public static String[][] grid = new String[numRows][numCols];
     public static int[][] missedGuesses = new int[numRows][numCols];
-    public static int[][] shipPosition = new int[numRows][numCols];
+    public static int[][] playerShipPosition = new int[numRows][numCols];
+    public static int[][] computerShipPosition = new int[numRows][numCols];
+    public static int[][] trapsPosition = new int[numRows][numCols];
+    public static int[][] potionsPosition = new int[numRows][numCols];
 
     public static void main(String[] args){
 
@@ -24,6 +33,12 @@ public class BattleShips {
 
         //Step 3 - Deploy computer's ships
         deployComputerShips();
+
+        //Step 3 - Deploy computer's ships
+        deployTraps();
+
+        //Step 3 - Deploy computer's ships
+        deployPotions();
 
         //Step 4 Battle
         do {
@@ -92,7 +107,7 @@ public class BattleShips {
         System.out.println("\nDeploy your ships:");
 
         //Deploying five ships for player
-        BattleShips.playerShips = 1;
+        BattleShips.playerShips = 3;
         for (int i = 1; i <= BattleShips.playerShips; i++) {
             System.out.print("Enter X coordinate for your " + i + " ship: ");
             int x = input.nextInt() -1;
@@ -101,17 +116,17 @@ public class BattleShips {
             Random randomGenerator = new Random();
             int length = randomGenerator.nextInt(3) + 3;
 
-            if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (grid[x][y] == "#"))
             {
                 for(int l = 0; l < length; l++){
-                    shipPosition[y][x+l] = 1;
-                    grid[y][x+l] = "@";
+                    playerShipPosition[x][y+l] = i;
+                    grid[x][y+l] = "@";
                 }
             }
-            else if((x >= 0 && x < numCols) && (y >= 0 && y < numRows) && grid[y][x] == "@")
+            else if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && grid[x][y] == "@")
                 System.out.println("You can't place two or more ships on the same location");
 
-            else if((x < 0 || x >= numCols-length) || (y < 0 || y >= numRows))
+            else if((x < 0 || x >= numRows) || (y < 0 || y >= numCols-length))
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
         }
         printOceanMap();
@@ -122,25 +137,66 @@ public class BattleShips {
         System.out.println("\nComputer is deploying ships");
 
         //Deploying five ships for computer
-        BattleShips.computerShips = 1;
-        for (int i = 1; i <= BattleShips.computerShips; i++) {
+        BattleShips.computerShips = 3;
+        int i = 1;
+        while (i <= BattleShips.computerShips) {
             Random randomGenerator = new Random();
-            //int x = randomGenerator.nextInt(60);
-            //int y = randomGenerator.nextInt(20);
-            int x = 1;
-            int y = 1;
+            int x = randomGenerator.nextInt(20);
+            int y = randomGenerator.nextInt(60);
             int length = randomGenerator.nextInt(3) + 3;
-            if((x >= 0 && x < numCols-length) && (y >= 0 && y < numRows) && (grid[y][x] == "#"))
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (grid[x][y] == "#"))
             {
                 for(int l = 0; l < length; l++){
-                    shipPosition[y][x+l] = 2;
-                    grid[y][x+l] = "x";
+                    computerShipPosition[x][y+l] = i;
+                    grid[x][y+l] = "x";
                 }
+                i++;
             }
         }
         printOceanMap();
     }
 
+    public static void deployTraps(){
+        System.out.println("\nDeploying traps");
+
+        //Deploying five traps
+        BattleShips.traps = 3;
+        int i = 1;
+        while (i <= BattleShips.traps) {
+            Random randomGenerator = new Random();
+            int x = randomGenerator.nextInt(20);
+            int y = randomGenerator.nextInt(60);
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (grid[x][y] == "#"))
+            {
+                BattleShips.remainingTraps.add(i);
+                trapsPosition[x][y] = i;
+                grid[x][y] = "T";
+                i++;
+            }
+        }
+        printOceanMap();
+    }
+
+    public static void deployPotions(){
+        System.out.println("\nDeploying potions");
+
+        //Deploying five traps
+        BattleShips.potions = 3;
+        int i = 1;
+        while (i <= BattleShips.potions) {
+            Random randomGenerator = new Random();
+            int x = randomGenerator.nextInt(20);
+            int y = randomGenerator.nextInt(60);
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (grid[x][y] == "#"))
+            {
+                BattleShips.remainingPotions.add(i);
+                potionsPosition[x][y] = i;
+                grid[x][y] = "P";
+                i++;
+            }
+        }
+        printOceanMap();
+    }
 
     public static void Battle(){
         playerTurn();
@@ -148,6 +204,7 @@ public class BattleShips {
         printOceanMap();
         System.out.println();
         System.out.println("Your ships: " + BattleShips.playerShips + " | Computer ships: " + BattleShips.computerShips);
+        System.out.println("Your life: " + BattleShips.playerLife + " | Computer life: " + BattleShips.computerLife);
         System.out.println();
     }
 
@@ -156,32 +213,90 @@ public class BattleShips {
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
         do {
+            Random randomGenerator = new Random();
             Scanner input = new Scanner(System.in);
             System.out.print("Enter X coordinate: ");
             x = input.nextInt() -1;
             System.out.print("Enter Y coordinate: ");
             y = input.nextInt() -1;
-            if ((x >= 0 && x < numCols) && (y >= 0 && y < numRows)) //valid guess
+            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols)) //valid guess
             {
-                if (grid[y][x] == "x") //if computer ship is already there; computer loses ship
+                if (grid[x][y] == "x") //if computer ship is already there; computer loses ship
                 {
+                    for(int i = 1; i <= BattleShips.playerShips; i++){
+                        if(computerShipPosition[x][y] == i){
+                           revealShip(i, "computer");
+                        }  
+                    }
                     System.out.println("Boom! You sunk the ship!");
-                    grid[y][x] = "!"; //Hit mark
                     --BattleShips.computerShips;
                 }
-                else if (grid[y][x] == "@") {
+                else if (grid[x][y] == "@") {
+                    for(int i = 1; i <= BattleShips.playerShips; i++){
+                        if(playerShipPosition[x][y] == i){
+                           revealShip(i, "player");
+                        }  
+                    }
                     System.out.println("Oh no, you sunk your own ship :(");
-                    grid[y][x] = "x";
                     --BattleShips.playerShips;
                 }
-                else if (grid[y][x] == "#") {
+                else if (grid[x][y] == "T") {
+                    int type = randomGenerator.nextInt(2) + 1;
+                    if(type == 1){
+                        for(int i = 1; i <= BattleShips.traps; i++){
+                            if(trapsPosition[x][y] == i){
+                               revealTrap(i);
+                            }  
+                        }
+                        System.out.println("Oh no, you hit in a Low Danger Trap :(");
+                        --BattleShips.playerLife;
+                    }else{
+                        for(int i = 1; i <= BattleShips.traps; i++){
+                            if(trapsPosition[x][y] == i){
+                               revealTrap(i);
+                            }  
+                        }
+                        System.out.println("Oh no, you hit in a High Danger Trap :(");
+                        BattleShips.playerLife -= 2;
+                    }
+                }
+                else if (grid[x][y] == "P") {
+                    //int type = randomGenerator.nextInt(3) + 1;
+                    int type = 2;
+                    if(type == 1){
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }  
+                        }
+                        System.out.println("Life Saver Potion, your health increase by 1");
+                        ++BattleShips.playerLife;
+                    }else if(type == 2){
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }  
+                        }
+                        System.out.println("Trap Reveal Potion");
+                        int trapNo = getRandomElement(BattleShips.remainingTraps);
+                        System.out.println(trapNo);
+                    }else{
+                        for(int i = 1; i <= BattleShips.potions; i++){
+                            if(potionsPosition[x][y] == i){
+                               revealPotion(i);
+                            }  
+                        }
+                        System.out.println("Great, you got a potion");
+                    }
+                }
+                else if (grid[x][y] == "#") {
                     System.out.println("Sorry, you missed");
-                    grid[y][x] = " ";
+                    grid[x][y] = " ";
                 }
             }
-            else if ((x < 0 || x >= numCols) || (y < 0 || y >= numRows))  //invalid guess
+            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols))  //invalid guess
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
-        }while((x < 0 || x >= numCols) || (y < 0 || y >= numRows));  //keep re-prompting till valid guess
+        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
     }
 
 
@@ -194,40 +309,134 @@ public class BattleShips {
             Random randomGenerator = new Random();
             x = randomGenerator.nextInt(60);
             y = randomGenerator.nextInt(20);
-            if ((x >= 0 && x < numCols) && (y >= 0 && y < numRows)) //valid guess
+            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols)) //valid guess
             {
-                if (grid[y][x] == "@") //if player ship is already there; player loses ship
+                if (grid[x][y] == "@") //if player ship is already there; player loses ship
                 {
+                    for(int i = 1; i <= BattleShips.playerShips; i++){
+                        if(playerShipPosition[x][y] == i){
+                           revealShip(i, "player");
+                        }  
+                    }
                     System.out.println("The Computer sunk one of your ships!");
-                    grid[y][x] = "x";
                     --BattleShips.playerShips;
                 }
-                else if (grid[y][x] == "x") {
+                else if (grid[x][y] == "x") {
+                    for(int i = 1; i <= BattleShips.playerShips; i++){
+                        if(computerShipPosition[x][y] == i){
+                           revealShip(i, "computer");
+                        }  
+                    }
                     System.out.println("The Computer sunk one of its own ships");
-                    grid[y][x] = "!";
                     --BattleShips.computerShips;
                 }
-                else if (grid[y][x] == "#") {
+                else if (grid[x][y] == "T") {
+                    int type = randomGenerator.nextInt(2) + 1;
+                    if(type == 1){
+                        for(int i = 1; i <= BattleShips.traps; i++){
+                            if(trapsPosition[x][y] == i){
+                               revealTrap(i);
+                            }  
+                        }
+                        System.out.println("Oh no, you hit in a Low Danger Trap :(");
+                        --BattleShips.playerLife;
+                    }else{
+                        for(int i = 1; i <= BattleShips.traps; i++){
+                            if(trapsPosition[x][y] == i){
+                               revealTrap(i);
+                            }  
+                        }
+                        System.out.println("Oh no, you hit in a High Danger Trap :(");
+                        BattleShips.playerLife -= 2;
+                    }
+                }
+                else if (grid[x][y] == "P") {
+                    for(int i = 1; i <= BattleShips.potions; i++){
+                        if(potionsPosition[x][y] == i){
+                           revealPotion(i);
+                        }  
+                    }
+                    System.out.println("Great, you got a potion");
+                }
+                else if (grid[x][y] == "#") {
                     System.out.println("Computer missed");
 
                     //Saving missed guesses for computer
-                    if(missedGuesses[y][x] != 3)
-                        missedGuesses[y][x] = 3;
+                    if(missedGuesses[x][y] != 3)
+                        missedGuesses[x][y] = 3;
                 }
             }
-        }while((x < 0 || x >= numCols) || (y < 0 || y >= numRows));  //keep re-prompting till valid guess
+        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
     }
 
 
     public static void gameOver(){
         System.out.println("Your ships: " + BattleShips.playerShips + " | Computer ships: " + BattleShips.computerShips);
+        System.out.println("Your life: " + BattleShips.playerLife + " | Computer life: " + BattleShips.computerLife);
         if(BattleShips.playerShips > 0 && BattleShips.computerShips <= 0)
             System.out.println("Hooray! You won the battle :)");
         else
             System.out.println("Sorry, you lost the battle");
         System.out.println();
-   }
+    }
 
+    public static void revealShip(int shipNo, String type){
+        if(type == "player"){
+            for(int i = 0; i < playerShipPosition.length; i++) {
+                for (int j = 0; j < playerShipPosition[i].length; j++) {
+                    if (playerShipPosition[i][j] == shipNo){
+                        grid[i][j] = "!";
+                        playerShipPosition[i][j] = 0;
+                    }
+                    else{
+                    }
+                }
+                System.out.println();
+            }
+        }
+        else {
+            for(int i = 0; i < computerShipPosition.length; i++) {
+                for (int j = 0; j < computerShipPosition[i].length; j++) {
+                    if (computerShipPosition[i][j] == shipNo){
+                        grid[i][j] = "!";
+                        computerShipPosition[i][j] = 0;
+                    }
+                    else{
+                    }
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public static void revealTrap(int trapNo){
+        for(int i = 0; i < trapsPosition.length; i++) {
+            for (int j = 0; j < trapsPosition[i].length; j++) {
+                if (trapsPosition[i][j] == trapNo){
+                    grid[i][j] = " ";
+                    trapsPosition[i][j] = 0;
+                    System.out.println("remaining traps"+ BattleShips.remainingTraps);
+                }
+                else{
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public static void revealPotion(int potionNo){
+        for(int i = 0; i < potionsPosition.length; i++) {
+            for (int j = 0; j < potionsPosition[i].length; j++) {
+                if (potionsPosition[i][j] == potionNo){
+                    grid[i][j] = " ";
+                    potionsPosition[i][j] = 0;
+                }
+                else{
+                }
+            }
+            System.out.println();
+        }
+    }
 
     public static void printOceanMap(){
         System.out.println();
@@ -259,16 +468,17 @@ public class BattleShips {
             for (int j = 0; j < grid[i].length; j++) {
                 if (j == 0){
                     if((i+1) < 10){
+
                         System.out.print(" " + (i+1) + "|" + grid[i][j]);
                     }else{
                         System.out.print((i+1) + "|" + grid[i][j]);
                     }
                 }
                 else if (j == grid[i].length - 1){
-                    System.out.print(grid[i][j]=="x"?"#":grid[i][j] + "|");
+                    System.out.print(grid[i][j] + "|");
                 }
                 else{
-                    System.out.print(grid[i][j]=="x"?"#":grid[i][j]);
+                    System.out.print(grid[i][j]);
                 }
             }
             System.out.println();
@@ -279,5 +489,11 @@ public class BattleShips {
             System.out.print("-");
         }
         System.out.println();
+    }
+
+    public static int getRandomElement(List<Integer> list) 
+    { 
+        Random rand = new Random(); 
+        return list.get(rand.nextInt(list.size())+1); 
     }
 }
