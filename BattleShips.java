@@ -10,7 +10,7 @@ public class BattleShips {
     public static int computerLife = 15;
     public static int traps;
     public static int potions;
-    public static ArrayList<Integer> remainingTraps = new ArrayList<Integer>();
+    public static ArrayList<String> remainingTraps = new ArrayList<String>();
     public static ArrayList<Integer> remainingPotions = new ArrayList<Integer>();
     public static String[][] grid = new String[numRows][numCols];
     public static int[][] missedGuesses = new int[numRows][numCols];
@@ -157,18 +157,19 @@ public class BattleShips {
     }
 
     public static void deployTraps(){
+        Random randomGenerator = new Random();
         System.out.println("\nDeploying traps");
 
         //Deploying five traps
         BattleShips.traps = 3;
         int i = 1;
         while (i <= BattleShips.traps) {
-            Random randomGenerator = new Random();
             int x = randomGenerator.nextInt(20);
             int y = randomGenerator.nextInt(60);
             if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (grid[x][y] == "#"))
             {
-                BattleShips.remainingTraps.add(i);
+                Integer obj = new Integer(i);
+                BattleShips.remainingTraps.add(obj.toString());
                 trapsPosition[x][y] = i;
                 grid[x][y] = "T";
                 i++;
@@ -181,7 +182,7 @@ public class BattleShips {
         System.out.println("\nDeploying potions");
 
         //Deploying five traps
-        BattleShips.potions = 3;
+        BattleShips.potions = 4;
         int i = 1;
         while (i <= BattleShips.potions) {
             Random randomGenerator = new Random();
@@ -275,18 +276,21 @@ public class BattleShips {
                         for(int i = 1; i <= BattleShips.potions; i++){
                             if(potionsPosition[x][y] == i){
                                revealPotion(i);
-                            }  
+                            }
                         }
                         System.out.println("Trap Reveal Potion");
-                        int trapNo = getRandomElement(BattleShips.remainingTraps);
-                        System.out.println(trapNo);
+                        if(BattleShips.remainingTraps.size() > 0){
+                            revealTrap(Integer.parseInt(BattleShips.remainingTraps.get(0)));
+                        }else{
+                            System.out.println("No more trap to reveal");
+                        }
                     }else{
                         for(int i = 1; i <= BattleShips.potions; i++){
                             if(potionsPosition[x][y] == i){
                                revealPotion(i);
                             }  
                         }
-                        System.out.println("Great, you got a potion");
+                        System.out.println("Ship Reveal Potion");
                     }
                 }
                 else if (grid[x][y] == "#") {
@@ -410,11 +414,12 @@ public class BattleShips {
     }
 
     public static void revealTrap(int trapNo){
+        Integer obj = new Integer(trapNo);
         for(int i = 0; i < trapsPosition.length; i++) {
             for (int j = 0; j < trapsPosition[i].length; j++) {
                 if (trapsPosition[i][j] == trapNo){
                     grid[i][j] = " ";
-                    trapsPosition[i][j] = 0;
+                    BattleShips.remainingTraps.remove(obj.toString());
                     System.out.println("remaining traps"+ BattleShips.remainingTraps);
                 }
                 else{
@@ -489,11 +494,5 @@ public class BattleShips {
             System.out.print("-");
         }
         System.out.println();
-    }
-
-    public static int getRandomElement(List<Integer> list) 
-    { 
-        Random rand = new Random(); 
-        return list.get(rand.nextInt(list.size())+1); 
     }
 }
