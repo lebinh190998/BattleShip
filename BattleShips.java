@@ -3,21 +3,21 @@ import java.util.*;
 public class BattleShips {
     public static int numRows = 20;
     public static int numCols = 60;
-    public static int computerShips;
+    //public static int computerShips;
     public static int playerDestroyedShips = 0;
     public static int playerLife = 3;
     public static int traps;
     public static int potions;
-    public static ArrayList<String> remainingComputerShips = new ArrayList<String>();
+    //public static ArrayList<String> remainingComputerShips = new ArrayList<String>();
     public static ArrayList<String> remainingTraps = new ArrayList<String>();
     public static ArrayList<Integer> remainingPotions = new ArrayList<Integer>();
     public static String[][] grid = new String[numRows][numCols];
-    public static int[][] computerShipPosition = new int[numRows][numCols];
+    //public static int[][] computerShipPosition = new int[numRows][numCols];
     public static int[][] trapsPosition = new int[numRows][numCols];
     public static int[][] potionsPosition = new int[numRows][numCols];
 
     public static void main(String[] args){
-
+        Ship ship = new Ship();
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
 
@@ -29,21 +29,22 @@ public class BattleShips {
         createOceanMap();
 
         //Step 3 - Deploy computer's ships
-        deployComputerShips();
+        Ship.deployComputerShips(numRows, numCols);
+        printOceanMap();
 
         //Step 3 - Deploy computer's ships
-        deployTraps();
+        //deployTraps();
 
         //Step 3 - Deploy computer's ships
-        deployPotions();
+        //deployPotions();
 
         //Step 4 Battle
         do {
-            Battle();
+            //Battle();
         }while(BattleShips.playerDestroyedShips < 5 && BattleShips.playerLife > 0);
 
         //Step 5 - Game over
-        gameOver();
+        //gameOver();
     }
 
 
@@ -55,17 +56,17 @@ public class BattleShips {
             level = input.nextInt();
     
             if(level == 1){
-                BattleShips.computerShips = 80;
+                Ship.setNumberOfShip(80);
                 BattleShips.traps = 10;
                 BattleShips.potions = 18;
             }
             else if(level == 2){
-                BattleShips.computerShips = 50;
+                Ship.setNumberOfShip(50);
                 BattleShips.traps = 20;
                 BattleShips.potions = 18;
             }
             else if(level == 3){
-                BattleShips.computerShips = 20;
+                Ship.setNumberOfShip(20);
                 BattleShips.traps = 30;
                 BattleShips.potions = 18;
             }
@@ -126,12 +127,13 @@ public class BattleShips {
         System.out.println();
     }
 
+    /*
     public static void deployComputerShips(){
         System.out.println("\nDeploying ships");
 
         //Deploying five ships for computer
         int i = 1;
-        while (i <= BattleShips.computerShips) {
+        while (i <= Ship.computerShips) {
             Random randomGenerator = new Random();
             int x = randomGenerator.nextInt(20);
             int y = randomGenerator.nextInt(60);
@@ -149,6 +151,7 @@ public class BattleShips {
         }
         printOceanMap();
     }
+    
 
     public static void deployTraps(){
         Random randomGenerator = new Random();
@@ -190,7 +193,9 @@ public class BattleShips {
         }
         printOceanMap();
     }
+    
 
+    
     public static void Battle(){
         playerTurn();
         printOceanMap();
@@ -199,6 +204,7 @@ public class BattleShips {
         System.out.println("Your life: " + BattleShips.playerLife);
         System.out.println();
     }
+    
 
 
     public static void playerTurn(){
@@ -207,6 +213,7 @@ public class BattleShips {
         do {
             Random randomGenerator = new Random();
             Scanner input = new Scanner(System.in);
+            
             System.out.print("Enter X coordinate: ");
             x = input.nextInt() -1;
             System.out.print("Enter Y coordinate: ");
@@ -303,6 +310,7 @@ public class BattleShips {
                 System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
         }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
     }
+    
 
     public static void gameOver(){
         if(BattleShips.playerDestroyedShips == 5)
@@ -326,6 +334,7 @@ public class BattleShips {
         }
         BattleShips.remainingComputerShips.remove(obj.toString());
     }
+    
 
     public static void revealShip(int shipNo){
         Integer obj = new Integer(shipNo);
@@ -339,7 +348,7 @@ public class BattleShips {
             }
         }
     }
-
+    
     public static void removeTrap(int trapNo){
         Integer obj = new Integer(trapNo);
         for(int i = 0; i < trapsPosition.length; i++) {
@@ -381,7 +390,8 @@ public class BattleShips {
         }
         BattleShips.remainingPotions.remove(obj.toString());
     }
-
+    */
+    
     public static void printOceanMap(){
         System.out.println();
 
