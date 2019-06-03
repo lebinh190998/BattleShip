@@ -79,7 +79,6 @@ public class Ship {
                 i++;
             }
         }
-        //printOceanMap();
     }
 
     public static boolean randomPlacingShip(int shipNo, int numRows, int numCols){

@@ -9,33 +9,37 @@ public class BattleShips {
     public static int traps;
     public static int potions;
     //public static ArrayList<String> remainingComputerShips = new ArrayList<String>();
-    public static ArrayList<String> remainingTraps = new ArrayList<String>();
+    //public static ArrayList<String> remainingTraps = new ArrayList<String>();
     public static ArrayList<Integer> remainingPotions = new ArrayList<Integer>();
     public static String[][] grid = new String[numRows][numCols];
-    //public static int[][] computerShipPosition = new int[numRows][numCols];
+    public static int[][] computerShipPosition = new int[numRows][numCols];
     public static int[][] trapsPosition = new int[numRows][numCols];
     public static int[][] potionsPosition = new int[numRows][numCols];
 
     public static void main(String[] args){
         Ship ship = new Ship();
+        Trap trap = new Trap();
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
 
 
-        //Step 1 – Create the ocean map
+        //Step 1 – Set game difficulty
         setDifficulty();
 
-        //Step 1 – Create the ocean map
+        //Step 2 – Create the ocean map
         createOceanMap();
 
         //Step 3 - Deploy computer's ships
         Ship.deployComputerShips(numRows, numCols);
+        computerShipPosition = Ship.getShipPosition();
         printOceanMap();
 
-        //Step 3 - Deploy computer's ships
-        //deployTraps();
+        //Step 4 - Deploy traps
+        Trap.deployTraps(numRows, numCols);
+        trapsPosition = Trap.getTrapPosition();
+        printOceanMap();
 
-        //Step 3 - Deploy computer's ships
+        //Step 5 - Deploy potions
         //deployPotions();
 
         //Step 4 Battle
@@ -57,17 +61,17 @@ public class BattleShips {
     
             if(level == 1){
                 Ship.setNumberOfShip(80);
-                BattleShips.traps = 10;
+                Trap.setNumberOfTrap(10);
                 BattleShips.potions = 18;
             }
             else if(level == 2){
                 Ship.setNumberOfShip(50);
-                BattleShips.traps = 20;
+                Trap.setNumberOfTrap(20);
                 BattleShips.potions = 18;
             }
             else if(level == 3){
                 Ship.setNumberOfShip(20);
-                BattleShips.traps = 30;
+                Trap.setNumberOfTrap(30);
                 BattleShips.potions = 18;
             }
             else{
