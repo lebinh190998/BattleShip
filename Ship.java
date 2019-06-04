@@ -5,9 +5,9 @@ public class Ship {
     private int shipLength;
     private int x;
     private int y;
-    private static int computerShips;
-    private static ArrayList<String> remainingComputerShips = new ArrayList<String>();
-    private static int[][] computerShipPosition = new int[20][60];
+    private static int ships;
+    private static ArrayList<String> remainingShips = new ArrayList<String>();
+    private static int[][] shipPosition = new int[BattleShips.numRows][BattleShips.numCols];
 
     public Ship() {
         this.shipNo = 0;
@@ -37,13 +37,13 @@ public class Ship {
         return y;
     }
     public static int getNumberOfShip() {
-        return computerShips;
+        return ships;
     }
     public static ArrayList<String> getRemainingShips() {
-        return remainingComputerShips;
+        return remainingShips;
     }
     public static int[][] getShipPosition() {
-        return computerShipPosition;
+        return shipPosition;
     }
 
     // Setter
@@ -60,20 +60,20 @@ public class Ship {
         this.y = newY;
     }
     public static void setNumberOfShip(int newNumberOfShip) {
-        computerShips = newNumberOfShip;
+        ships = newNumberOfShip;
     }
     public static void setRemainingShips(ArrayList<String> newRemainingShips) {
-        remainingComputerShips = newRemainingShips;
+        remainingShips = newRemainingShips;
     }
     public static void setShipPosition(int[][] newShipPosition) {
-        computerShipPosition = newShipPosition;
+        shipPosition = newShipPosition;
     }
 
-    public static void deployComputerShips(int numRows, int numCols){
+    public static void deployShips(int numRows, int numCols){
         System.out.println("\nDeploying ships");
 
         int i = 1;
-        while (i <= computerShips) {
+        while (i <= ships) {
             boolean result = randomPlacingShip(i, numRows, numCols);
             if(result == true){
                 i++;
@@ -89,15 +89,44 @@ public class Ship {
         if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (BattleShips.grid[x][y] == "#") && (BattleShips.trapsPosition[x][y] == 0) && (BattleShips.potionsPosition[x][y] == 0))
         {
             for(int l = 0; l < length; l++){
-                computerShipPosition[x][y+l] = shipNo;
+                shipPosition[x][y+l] = shipNo;
                 BattleShips.grid[x][y+l] = "c";
             }
             Integer obj = new Integer(shipNo);
-            Ship.remainingComputerShips.add(obj.toString());
+            Ship.remainingShips.add(obj.toString());
 
             return true;
         }else{
             return false;
+        }
+    }
+
+    public static void removeShip(int shipNo){
+        Integer obj = new Integer(shipNo);
+        for(int i = 0; i < shipPosition.length; i++) {
+            for (int j = 0; j < shipPosition[i].length; j++) {
+                if (shipPosition[i][j] == shipNo){
+                    BattleShips.grid[i][j] = "!";
+                    shipPosition[i][j] = 0;
+                    
+                }
+                else{
+                }
+            }
+        }
+        Ship.remainingShips.remove(obj.toString());
+    }
+
+    public static void revealShip(int shipNo){
+        Integer obj = new Integer(shipNo);
+        for(int i = 0; i < shipPosition.length; i++) {
+            for (int j = 0; j < shipPosition[i].length; j++) {
+                if (shipPosition[i][j] == shipNo){
+                    BattleShips.grid[i][j] = "0";
+                }
+                else{
+                }
+            }
         }
     }
 }
