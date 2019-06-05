@@ -7,10 +7,14 @@ public class Potion {
 
     public Potion() {
         Potion.potions = 0;
+        Potion.remainingPotions = new ArrayList<String>();
+        Potion.potionsPosition = new int[Grid.numRows][Grid.numCols];
     }
 
     public Potion(int potions) {
         Potion.potions = potions;
+        Potion.remainingPotions = new ArrayList<String>();
+        Potion.potionsPosition = new int[Grid.numRows][Grid.numCols];
     }
 
     // Getter
@@ -49,12 +53,12 @@ public class Potion {
 
     public static boolean randomPlacingPotion(int potionNo, int numRows, int numCols){
         Random randomGenerator = new Random();
-        int x = randomGenerator.nextInt(numRows);
-        int y = randomGenerator.nextInt(numCols);
-        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (BattleShips.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
+        int x = randomGenerator.nextInt(Grid.numRows);
+        int y = randomGenerator.nextInt(Grid.numCols);
+        if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
             Potion.potionsPosition[x][y] = potionNo;
-            BattleShips.grid[x][y] = "p";
+            Grid.grid[x][y] = "p";
             Integer obj = new Integer(potionNo);
             Potion.remainingPotions.add(obj.toString());
 
@@ -69,7 +73,7 @@ public class Potion {
         for(int i = 0; i < Potion.potionsPosition.length; i++) {
             for (int j = 0; j < Potion.potionsPosition[i].length; j++) {
                 if (Potion.potionsPosition[i][j] == potionNo){
-                    BattleShips.grid[i][j] = " ";
+                    Grid.grid[i][j] = " ";
                     Potion.potionsPosition[i][j] = 0;
                 }
                 else{

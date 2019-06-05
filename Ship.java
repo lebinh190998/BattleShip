@@ -3,14 +3,18 @@ import java.util.*;
 public class Ship {
     private static int ships;
     private static ArrayList<String> remainingShips = new ArrayList<String>();
-    public static int[][] shipPosition = new int[BattleShips.numRows][BattleShips.numCols];
+    public static int[][] shipPosition;
 
     public Ship() {
         Ship.ships = 0;
+        Ship.shipPosition = new int[Grid.numRows][Grid.numCols];
+        Ship.remainingShips = new ArrayList<String>();
     }
 
     public Ship(int ships) {
         Ship.ships = ships;
+        Ship.shipPosition = new int[Grid.numRows][Grid.numCols];
+        Ship.remainingShips = new ArrayList<String>();
     }
 
     // Getter
@@ -35,28 +39,28 @@ public class Ship {
         Ship.shipPosition = newShipPosition;
     }
 
-    public static void deployShips(int numRows, int numCols){
+    public static void deployShips(){
         System.out.println("\nDeploying ships");
 
         int i = 1;
         while (i <= Ship.ships) {
-            boolean result = randomPlacingShip(i, numRows, numCols);
+            boolean result = randomPlacingShip(i);
             if(result == true){
                 i++;
             }
         }
     }
 
-    public static boolean randomPlacingShip(int shipNo, int numRows, int numCols){
+    public static boolean randomPlacingShip(int shipNo){
         Random randomGenerator = new Random();
-        int x = randomGenerator.nextInt(numRows);
-        int y = randomGenerator.nextInt(numCols);
+        int x = randomGenerator.nextInt(Grid.numRows);
+        int y = randomGenerator.nextInt(Grid.numCols);
         int length = randomGenerator.nextInt(3) + 3;
-        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (BattleShips.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
+        if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols-length) && (Grid.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
             for(int l = 0; l < length; l++){
                 Ship.shipPosition[x][y+l] = shipNo;
-                BattleShips.grid[x][y+l] = "c";
+                Grid.grid[x][y+l] = "c";
             }
             Integer obj = new Integer(shipNo);
             Ship.remainingShips.add(obj.toString());
@@ -72,7 +76,7 @@ public class Ship {
         for(int i = 0; i < Ship.shipPosition.length; i++) {
             for (int j = 0; j < Ship.shipPosition[i].length; j++) {
                 if (Ship.shipPosition[i][j] == shipNo){
-                    BattleShips.grid[i][j] = "!";
+                    Grid.grid[i][j] = "!";
                     Ship.shipPosition[i][j] = 0;
                 }
                 else{
@@ -87,7 +91,7 @@ public class Ship {
         for(int i = 0; i < Ship.shipPosition.length; i++) {
             for (int j = 0; j < Ship.shipPosition[i].length; j++) {
                 if (Ship.shipPosition[i][j] == shipNo){
-                    BattleShips.grid[i][j] = "0";
+                    Grid.grid[i][j] = "0";
                 }
                 else{
                 }

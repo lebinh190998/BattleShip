@@ -1,13 +1,11 @@
 import java.util.*;
 
 public class BattleShips {
-    public static int numRows = 20;
-    public static int numCols = 60;
     public static int playerDestroyedShips = 0;
-    public static int playerLife = 3;
-    public static String[][] grid = new String[numRows][numCols];
+    public static int playerLife = 15;
 
     public static void main(String[] args){
+        Grid grid = new Grid(20, 60);
         Ship ship = new Ship();
         Trap trap = new Trap();
         Potion potion = new Potion();
@@ -19,7 +17,7 @@ public class BattleShips {
         setDifficulty();
 
         //Step 2 – Create the ocean map
-        createOceanMap();
+        Grid.createOceanMap();
 
         //Step 3 - Deploy ships
         prepareShips();
@@ -68,75 +66,24 @@ public class BattleShips {
         }while(level != 1 && level != 2 && level != 3);
     }
 
-    public static void createOceanMap(){
-        //Header section of Ocean Map
-        System.out.print("   ");
-        for(int i = 1; i <= numCols; i++){
-            int x = (int)(i/10);
-            if(i-(x*10) == 0){
-                System.out.print(x);
-            }else{
-                System.out.print(" ");
-            }
-        }
-        System.out.println();
-        System.out.print("   ");
-        for(int i = 1; i <= numCols; i++){
-            if(i > 9){
-                int x = (int)(i/10);
-                System.out.print(i-(x*10));
-            }else{
-                System.out.print(i);
-            }
-        }
-        System.out.println();
-
-        //Middle section of Ocean Map
-        for(int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                grid[i][j] = "#";
-                if (j == 0){
-                    if((i+1) < 10){
-                        System.out.print(" " + (i+1) + "|" + grid[i][j]);
-                    }else{
-                        System.out.print((i+1) + "|" + grid[i][j]);
-                    }
-                }
-                else if (j == grid[i].length - 1){
-                    System.out.print(grid[i][j] + "|");
-                }
-                else{
-                    System.out.print(grid[i][j]);
-                }
-            }
-            System.out.println();
-        }
-
-        //Last section of Ocean Map
-        for(int i = 1; i <= numCols+5; i++){
-            System.out.print("-");
-        }
-        System.out.println();
-    }
-
     public static void prepareShips(){
-        Ship.deployShips(numRows, numCols);
-        printOceanMap();
+        Ship.deployShips();
+        Grid.printOceanMap();
     }
 
     public static void prepareTraps(){
-        Trap.deployTraps(numRows, numCols);
-        printOceanMap();
+        Trap.deployTraps(Grid.numRows, Grid.numCols);
+        Grid.printOceanMap();
     }
 
     public static void preparePotions(){
-        Potion.deployPotions(numRows, numCols);
-        printOceanMap();
+        Potion.deployPotions(Grid.numRows, Grid.numCols);
+        Grid.printOceanMap();
     }
     
     public static void Battle(){
-        playerTurn();
-        printOceanMap();
+        playGame();
+        Grid.printOceanMap();
         System.out.println();
         System.out.println("Destroyed ships: " + BattleShips.playerDestroyedShips);
         System.out.println("Your life: " + BattleShips.playerLife);
@@ -145,7 +92,7 @@ public class BattleShips {
     
 
 
-    public static void playerTurn(){
+    public static void playGame(){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
         int numberOfShips = Ship.getNumberOfShip();
@@ -153,35 +100,32 @@ public class BattleShips {
         int numberOfPotions = Potion.getNumberOfPotion();
         do {
             Random randomGenerator = new Random();
-            int[][] shipPosition = Ship.getShipPosition();
-            int[][] trapsPosition = Trap.getTrapPosition();
-            int[][] potionsPosition = Potion.getPotionPosition();
+            Scanner input = new Scanner(System.in);
             ArrayList<String> remainingTraps = Trap.getRemainingTraps();
             ArrayList<String> remainingShips = Ship.getRemainingShips();
-            Scanner input = new Scanner(System.in);
             
             System.out.print("Enter X coordinate: ");
             x = input.nextInt() -1;
             System.out.print("Enter Y coordinate: ");
             y = input.nextInt() -1;
-            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols)) //valid guess
+            if ((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols)) //valid guess
             {
-                if (grid[x][y] != " " && shipPosition[x][y] != 0) //if ship is already there; loses ship
+                if (Grid.grid[x][y] != " " && Ship.shipPosition[x][y] != 0) //if ship is already there; loses ship
                 {
                     for(int i = 1; i <= numberOfShips; i++){
-                        if(shipPosition[x][y] == i){
+                        if(Ship.shipPosition[x][y] == i){
                            Ship.removeShip(i);
                         }  
                     }
                     System.out.println("Boom! You sunk the ship!");
                     ++BattleShips.playerDestroyedShips;
                 }
-                else if (grid[x][y] != " " && trapsPosition[x][y] != 0)
+                else if (Grid.grid[x][y] != " " && Trap.trapsPosition[x][y] != 0)
                 {
                     int type = randomGenerator.nextInt(2);
                     if(type == 0){
                         for(int i = 1; i <= numberOfTraps; i++){
-                            if(trapsPosition[x][y] == i){
+                            if(Trap.trapsPosition[x][y] == i){
                                Trap.removeTrap(i);
                             }  
                         }
@@ -189,7 +133,7 @@ public class BattleShips {
                         --BattleShips.playerLife;
                     }else{
                         for(int i = 1; i <= numberOfTraps; i++){
-                            if(trapsPosition[x][y] == i){
+                            if(Trap.trapsPosition[x][y] == i){
                                Trap.removeTrap(i);
                             }  
                         }
@@ -197,14 +141,14 @@ public class BattleShips {
                         BattleShips.playerLife -= 2;
                     }
                 }
-                else if (grid[x][y] != " " && potionsPosition[x][y] != 0) 
+                else if (Grid.grid[x][y] != " " && Potion.potionsPosition[x][y] != 0) 
                 {
                     int type = randomGenerator.nextInt(3);
                     //int type = 1;
                     if(type == 0)
                     {
                         for(int i = 1; i <= numberOfPotions; i++){
-                            if(potionsPosition[x][y] == i){
+                            if(Potion.potionsPosition[x][y] == i){
                                Potion.revealPotion(i);
                             }  
                         }
@@ -214,7 +158,7 @@ public class BattleShips {
                     else if(type == 1)
                     {
                         for(int i = 1; i <= numberOfPotions; i++){
-                            if(potionsPosition[x][y] == i){
+                            if(Potion.potionsPosition[x][y] == i){
                                Potion.revealPotion(i);
                             }
                         }
@@ -231,7 +175,7 @@ public class BattleShips {
                     else
                     {
                         for(int i = 1; i <= numberOfPotions; i++){
-                            if(potionsPosition[x][y] == i){
+                            if(Potion.potionsPosition[x][y] == i){
                                Potion.revealPotion(i);
                             }  
                         }
@@ -246,19 +190,19 @@ public class BattleShips {
                         }
                     }
                 }
-                else if (grid[x][y] == "#") 
+                else if (Grid.grid[x][y] == "#") 
                 {
                     System.out.println("Sorry, you missed");
-                    grid[x][y] = " ";
+                    Grid.grid[x][y] = " ";
                 }
-                else if (grid[x][y] == " " || grid[x][y] == "!") 
+                else if (Grid.grid[x][y] == " " || Grid.grid[x][y] == "!") 
                 {
                     System.out.println("You have chosen that position");
                 }
             }
-            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols))  //invalid guess
-                System.out.println("You can't place ships outside the " + numRows + " by " + numCols + " grid");
-        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));  //keep re-prompting till valid guess
+            else if ((x < 0 || x >= Grid.numRows) || (y < 0 || y >= Grid.numCols))  //invalid guess
+                System.out.println("You can't chose position outside the " + Grid.numRows + " by " + Grid.numCols + " grid");
+        }while((x < 0 || x >= Grid.numRows) || (y < 0 || y >= Grid.numCols));  //keep re-prompting till valid guess
     }
     
 
@@ -267,60 +211,6 @@ public class BattleShips {
             System.out.println("Hooray! You won the battle :)");
         else
             System.out.println("Sorry! You lost the battle :(");
-        System.out.println();
-    }
-    
-    
-    public static void printOceanMap(){
-        System.out.println();
-
-        //First section of Ocean Map
-        System.out.print("   ");
-        for(int i = 1; i <= numCols; i++){
-            int x = (int)(i/10);
-            if(i-(x*10) == 0){
-                System.out.print(x);
-            }else{
-                System.out.print(" ");
-            }
-        }
-        System.out.println();
-        System.out.print("   ");
-        for(int i = 1; i <= numCols; i++){
-            if(i > 9){
-                int x = (int)(i/10);
-                System.out.print(i-(x*10));
-            }else{
-                System.out.print(i);
-            }
-        }
-        System.out.println();
-
-        //Middle section of Ocean Map
-        for(int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (j == 0){
-                    if((i+1) < 10){
-
-                        System.out.print(" " + (i+1) + "|" + grid[i][j]);
-                    }else{
-                        System.out.print((i+1) + "|" + grid[i][j]);
-                    }
-                }
-                else if (j == grid[i].length - 1){
-                    System.out.print(grid[i][j] + "|");
-                }
-                else{
-                    System.out.print(grid[i][j]);
-                }
-            }
-            System.out.println();
-        }
-
-        //Last section of Ocean Map
-        for(int i = 1; i <= numCols+5; i++){
-            System.out.print("-");
-        }
         System.out.println();
     }
 }
