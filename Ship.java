@@ -69,27 +69,27 @@ public class Ship {
         shipPosition = newShipPosition;
     }
 
-    public static void deployShips(int numRows, int numCols){
+    public static void deployShips(int numRows, int numCols, int[][] shipPosition, int[][] trapsPosition, int[][] potionsPosition){
         System.out.println("\nDeploying ships");
 
         int i = 1;
         while (i <= ships) {
-            boolean result = randomPlacingShip(i, numRows, numCols);
+            boolean result = randomPlacingShip(i, numRows, numCols, shipPosition, trapsPosition, potionsPosition);
             if(result == true){
                 i++;
             }
         }
     }
 
-    public static boolean randomPlacingShip(int shipNo, int numRows, int numCols){
+    public static boolean randomPlacingShip(int shipNo, int numRows, int numCols, int[][] shipPosition, int[][] trapsPosition, int[][] potionsPosition){
         Random randomGenerator = new Random();
         int x = randomGenerator.nextInt(numRows);
         int y = randomGenerator.nextInt(numCols);
         int length = randomGenerator.nextInt(3) + 3;
-        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (BattleShips.grid[x][y] == "#") && (BattleShips.trapsPosition[x][y] == 0) && (BattleShips.potionsPosition[x][y] == 0))
+        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length) && (BattleShips.grid[x][y] == "#") && (shipPosition[x][y] == 0) && (trapsPosition[x][y] == 0) && (potionsPosition[x][y] == 0))
         {
             for(int l = 0; l < length; l++){
-                shipPosition[x][y+l] = shipNo;
+                Ship.shipPosition[x][y+l] = shipNo;
                 BattleShips.grid[x][y+l] = "c";
             }
             Integer obj = new Integer(shipNo);
@@ -103,12 +103,11 @@ public class Ship {
 
     public static void removeShip(int shipNo){
         Integer obj = new Integer(shipNo);
-        for(int i = 0; i < shipPosition.length; i++) {
-            for (int j = 0; j < shipPosition[i].length; j++) {
-                if (shipPosition[i][j] == shipNo){
+        for(int i = 0; i < Ship.shipPosition.length; i++) {
+            for (int j = 0; j < Ship.shipPosition[i].length; j++) {
+                if (Ship.shipPosition[i][j] == shipNo){
                     BattleShips.grid[i][j] = "!";
-                    shipPosition[i][j] = 0;
-                    
+                    Ship.shipPosition[i][j] = 0;
                 }
                 else{
                 }
@@ -119,9 +118,9 @@ public class Ship {
 
     public static void revealShip(int shipNo){
         Integer obj = new Integer(shipNo);
-        for(int i = 0; i < shipPosition.length; i++) {
-            for (int j = 0; j < shipPosition[i].length; j++) {
-                if (shipPosition[i][j] == shipNo){
+        for(int i = 0; i < Ship.shipPosition.length; i++) {
+            for (int j = 0; j < Ship.shipPosition[i].length; j++) {
+                if (Ship.shipPosition[i][j] == shipNo){
                     BattleShips.grid[i][j] = "0";
                 }
                 else{

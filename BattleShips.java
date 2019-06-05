@@ -123,7 +123,10 @@ public class BattleShips {
     }
 
     public static void prepareShips(){
-        Ship.deployShips(numRows, numCols);
+        int[][] shipPosition = Ship.getShipPosition();
+        int[][] trapsPosition = Trap.getTrapPosition();
+        int[][] potionsPosition = Potion.getPotionPosition();
+        Ship.deployShips(numRows, numCols, shipPosition, trapsPosition, potionsPosition);
         printOceanMap();
     }
 
