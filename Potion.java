@@ -1,70 +1,45 @@
 import java.util.*;
 
 public class Potion {
-    private int potionNo;
-    private int x;
-    private int y;
     private static int potions;
     private static ArrayList<String> remainingPotions = new ArrayList<String>();
-    private static int[][] potionsPosition = new int[20][60];
+    public static int[][] potionsPosition = new int[20][60];
 
     public Potion() {
-        this.potionNo = 0;
-        this.x = 0;
-        this.y = 0;
+        Potion.potions = 0;
     }
 
-    public Potion(int potionNo, int x, int y) {
-        this.potionNo = potionNo;
-        this.x = x;
-        this.y = y;
+    public Potion(int potions) {
+        Potion.potions = potions;
     }
 
     // Getter
-    public int getPotionNo() {
-        return potionNo;
-    }
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
     public static int getNumberOfPotion() {
-        return potions;
+        return Potion.potions;
     }
     public static ArrayList<String> getRemainingPotions() {
-        return remainingPotions;
+        return Potion.remainingPotions;
     }
     public static int[][] getPotionPosition() {
-        return potionsPosition;
+        return Potion.potionsPosition;
     }
 
     // Setter
-    public void setPotionNo(int newPotionNo) {
-        this.potionNo = newPotionNo;
-    }
-    public void setX(int newX) {
-        this.x = newX;
-    }
-    public void setY(int newY) {
-        this.y = newY;
-    }
     public static void setNumberOfPotion(int newNumberOfPotion) {
-        potions = newNumberOfPotion;
+        Potion.potions = newNumberOfPotion;
     }
     public static void setRemainingPotions(ArrayList<String> newRemainingPotions) {
-        remainingPotions = newRemainingPotions;
+        Potion.remainingPotions = newRemainingPotions;
     }
     public static void setPotionsPosition(int[][] newPotionsPosition) {
-        potionsPosition = newPotionsPosition;
+        Potion.potionsPosition = newPotionsPosition;
     }
 
     public static void deployPotions(int numRows, int numCols){
         System.out.println("\nDeploying potions");
 
         int i = 1;
-        while (i <= potions) {
+        while (i <= Potion.potions) {
             boolean result = randomPlacingPotion(i, numRows, numCols);
             if(result == true){
                 i++;
@@ -76,9 +51,9 @@ public class Potion {
         Random randomGenerator = new Random();
         int x = randomGenerator.nextInt(numRows);
         int y = randomGenerator.nextInt(numCols);
-        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (BattleShips.grid[x][y] == "#") && (BattleShips.shipPosition[x][y] == 0) && (BattleShips.trapsPosition[x][y] == 0))
+        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (BattleShips.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
-            potionsPosition[x][y] = potionNo;
+            Potion.potionsPosition[x][y] = potionNo;
             BattleShips.grid[x][y] = "p";
             Integer obj = new Integer(potionNo);
             Potion.remainingPotions.add(obj.toString());
@@ -91,11 +66,11 @@ public class Potion {
 
     public static void revealPotion(int potionNo){
         Integer obj = new Integer(potionNo);
-        for(int i = 0; i < potionsPosition.length; i++) {
-            for (int j = 0; j < potionsPosition[i].length; j++) {
-                if (potionsPosition[i][j] == potionNo){
+        for(int i = 0; i < Potion.potionsPosition.length; i++) {
+            for (int j = 0; j < Potion.potionsPosition[i].length; j++) {
+                if (Potion.potionsPosition[i][j] == potionNo){
                     BattleShips.grid[i][j] = " ";
-                    potionsPosition[i][j] = 0;
+                    Potion.potionsPosition[i][j] = 0;
                 }
                 else{
                 }

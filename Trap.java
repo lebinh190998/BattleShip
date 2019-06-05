@@ -1,70 +1,45 @@
 import java.util.*;
 
 public class Trap {
-    private int trapNo;
-    private int x;
-    private int y;
     private static int traps;
     private static ArrayList<String> remainingTraps = new ArrayList<String>();
-    private static int[][] trapsPosition = new int[20][60];
+    public static int[][] trapsPosition = new int[20][60];
 
     public Trap() {
-        this.trapNo = 0;
-        this.x = 0;
-        this.y = 0;
+        Trap.traps = 0;
     }
 
-    public Trap(int trapNo, int x, int y) {
-        this.trapNo = trapNo;
-        this.x = x;
-        this.y = y;
+    public Trap(int traps) {
+        Trap.traps = traps;
     }
 
     // Getter
-    public int getTrapNo() {
-        return trapNo;
-    }
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
     public static int getNumberOfTrap() {
-        return traps;
+        return Trap.traps;
     }
     public static ArrayList<String> getRemainingTraps() {
-        return remainingTraps;
+        return Trap.remainingTraps;
     }
     public static int[][] getTrapPosition() {
-        return trapsPosition;
+        return Trap.trapsPosition;
     }
 
     // Setter
-    public void setTrapNo(int newTrapNo) {
-        this.trapNo = newTrapNo;
-    }
-    public void setX(int newX) {
-        this.x = newX;
-    }
-    public void setY(int newY) {
-        this.y = newY;
-    }
     public static void setNumberOfTrap(int newNumberOfTrap) {
-        traps = newNumberOfTrap;
+        Trap.traps = newNumberOfTrap;
     }
     public static void setRemainingTraps(ArrayList<String> newRemainingTraps) {
-        remainingTraps = newRemainingTraps;
+        Trap.remainingTraps = newRemainingTraps;
     }
     public static void setTrapsPosition(int[][] newTrapPosition) {
-        trapsPosition = newTrapPosition;
+        Trap.trapsPosition = newTrapPosition;
     }
 
     public static void deployTraps(int numRows, int numCols){
         System.out.println("\nDeploying traps");
 
         int i = 1;
-        while (i <= traps) {
+        while (i <= Trap.traps) {
             boolean result = randomPlacingTrap(i, numRows, numCols);
             if(result == true){
                 i++;
@@ -76,9 +51,9 @@ public class Trap {
         Random randomGenerator = new Random();
         int x = randomGenerator.nextInt(numRows);
         int y = randomGenerator.nextInt(numCols);
-        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (BattleShips.grid[x][y] == "#") && (BattleShips.shipPosition[x][y] == 0) && (BattleShips.potionsPosition[x][y] == 0))
+        if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && (BattleShips.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
-            trapsPosition[x][y] = trapNo;
+            Trap.trapsPosition[x][y] = trapNo;
             BattleShips.grid[x][y] = "t";
             Integer obj = new Integer(trapNo);
             Trap.remainingTraps.add(obj.toString());
@@ -91,11 +66,11 @@ public class Trap {
 
     public static void removeTrap(int trapNo){
         Integer obj = new Integer(trapNo);
-        for(int i = 0; i < trapsPosition.length; i++) {
-            for (int j = 0; j < trapsPosition[i].length; j++) {
-                if (trapsPosition[i][j] == trapNo){
+        for(int i = 0; i < Trap.trapsPosition.length; i++) {
+            for (int j = 0; j < Trap.trapsPosition[i].length; j++) {
+                if (Trap.trapsPosition[i][j] == trapNo){
                     BattleShips.grid[i][j] = " ";
-                    trapsPosition[i][j] = 0;
+                    Trap.trapsPosition[i][j] = 0;
                 }
                 else{
                 }
@@ -106,9 +81,9 @@ public class Trap {
 
     public static void revealTrap(int trapNo){
         Integer obj = new Integer(trapNo);
-        for(int i = 0; i < trapsPosition.length; i++) {
-            for (int j = 0; j < trapsPosition[i].length; j++) {
-                if (trapsPosition[i][j] == trapNo){
+        for(int i = 0; i < Trap.trapsPosition.length; i++) {
+            for (int j = 0; j < Trap.trapsPosition[i].length; j++) {
+                if (Trap.trapsPosition[i][j] == trapNo){
                     BattleShips.grid[i][j] = "/";
                 }
                 else{

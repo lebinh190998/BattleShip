@@ -6,9 +6,6 @@ public class BattleShips {
     public static int playerDestroyedShips = 0;
     public static int playerLife = 3;
     public static String[][] grid = new String[numRows][numCols];
-    public static int[][] shipPosition = new int[numRows][numCols];
-    public static int[][] trapsPosition = new int[numRows][numCols];
-    public static int[][] potionsPosition = new int[numRows][numCols];
 
     public static void main(String[] args){
         Ship ship = new Ship();
@@ -123,10 +120,7 @@ public class BattleShips {
     }
 
     public static void prepareShips(){
-        int[][] shipPosition = Ship.getShipPosition();
-        int[][] trapsPosition = Trap.getTrapPosition();
-        int[][] potionsPosition = Potion.getPotionPosition();
-        Ship.deployShips(numRows, numCols, shipPosition, trapsPosition, potionsPosition);
+        Ship.deployShips(numRows, numCols);
         printOceanMap();
     }
 
