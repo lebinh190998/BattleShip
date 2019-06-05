@@ -12,7 +12,6 @@ public class BattleShips {
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
 
-
         //Step 1 – Set game difficulty
         setDifficulty();
 
@@ -68,25 +67,22 @@ public class BattleShips {
 
     public static void prepareShips(){
         Ship.deployShips();
-        Grid.printOceanMap();
     }
 
     public static void prepareTraps(){
         Trap.deployTraps(Grid.numRows, Grid.numCols);
-        Grid.printOceanMap();
     }
 
     public static void preparePotions(){
         Potion.deployPotions(Grid.numRows, Grid.numCols);
-        Grid.printOceanMap();
     }
     
     public static void Battle(){
         playGame();
         Grid.printOceanMap();
         System.out.println();
-        System.out.println("Destroyed ships: " + BattleShips.playerDestroyedShips);
-        System.out.println("Your life: " + BattleShips.playerLife);
+        System.out.println("Ships found: " + BattleShips.playerDestroyedShips);
+        System.out.println("Life left: " + BattleShips.playerLife);
         System.out.println();
     }
     
@@ -104,9 +100,9 @@ public class BattleShips {
             ArrayList<String> remainingTraps = Trap.getRemainingTraps();
             ArrayList<String> remainingShips = Ship.getRemainingShips();
             
-            System.out.print("Enter X coordinate: ");
+            System.out.print("Enter row coordinate: ");
             x = input.nextInt() -1;
-            System.out.print("Enter Y coordinate: ");
+            System.out.print("Enter column coordinate: ");
             y = input.nextInt() -1;
             if ((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols)) //valid guess
             {
@@ -144,7 +140,6 @@ public class BattleShips {
                 else if (Grid.grid[x][y] != " " && Potion.potionsPosition[x][y] != 0) 
                 {
                     int type = randomGenerator.nextInt(3);
-                    //int type = 1;
                     if(type == 0)
                     {
                         for(int i = 1; i <= numberOfPotions; i++){
@@ -208,9 +203,21 @@ public class BattleShips {
 
     public static void gameOver(){
         if(BattleShips.playerDestroyedShips == 5)
-            System.out.println("Hooray! You won the battle :)");
+        {
+            System.out.println("///////");
+            System.out.println("|0   0|");
+            System.out.println("|  U  |");
+            System.out.println("|_____|");
+            System.out.println("Hooray! You won the battle!");
+        }           
         else
-            System.out.println("Sorry! You lost the battle :(");
+        {
+            System.out.println("///////");
+            System.out.println("|0   0|");
+            System.out.println("|  ^  |");
+            System.out.println("|_____|");
+            System.out.println("Sorry! You lost the battle ");
+        }
         System.out.println();
     }
 }

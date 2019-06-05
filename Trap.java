@@ -58,7 +58,7 @@ public class Trap {
         if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
             Trap.trapsPosition[x][y] = trapNo;
-            Grid.grid[x][y] = "t";
+            //Grid.grid[x][y] = "t";
             Integer obj = new Integer(trapNo);
             Trap.remainingTraps.add(obj.toString());
 
@@ -88,7 +88,7 @@ public class Trap {
         for(int i = 0; i < Trap.trapsPosition.length; i++) {
             for (int j = 0; j < Trap.trapsPosition[i].length; j++) {
                 if (Trap.trapsPosition[i][j] == trapNo){
-                    Grid.grid[i][j] = "/";
+                    Grid.grid[i][j] = "t";
                 }
                 else{
                 }

@@ -60,7 +60,7 @@ public class Ship {
         {
             for(int l = 0; l < length; l++){
                 Ship.shipPosition[x][y+l] = shipNo;
-                Grid.grid[x][y+l] = "c";
+                //Grid.grid[x][y+l] = "c";
             }
             Integer obj = new Integer(shipNo);
             Ship.remainingShips.add(obj.toString());

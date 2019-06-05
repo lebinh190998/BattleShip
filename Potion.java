@@ -58,7 +58,7 @@ public class Potion {
         if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Ship.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
             Potion.potionsPosition[x][y] = potionNo;
-            Grid.grid[x][y] = "p";
+            //Grid.grid[x][y] = "p";
             Integer obj = new Integer(potionNo);
             Potion.remainingPotions.add(obj.toString());
 
