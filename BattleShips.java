@@ -6,7 +6,7 @@ public class BattleShips {
 
     public static void main(String[] args){
         Grid grid = new Grid(20, 60);
-        Ship ship = new Ship();
+        //Ship ship = new Ship();
         Trap trap = new Trap();
         Potion potion = new Potion();
         System.out.println("**** Welcome to Battle Ships game ****");
@@ -45,17 +45,17 @@ public class BattleShips {
             level = input.nextInt();
     
             if(level == 1){
-                Ship.setNumberOfShip(80);
+                Grid.setNumberOfShip(80);
                 Trap.setNumberOfTrap(10);
                 Potion.setNumberOfPotion(18);
             }
             else if(level == 2){
-                Ship.setNumberOfShip(50);
+                Grid.setNumberOfShip(50);
                 Trap.setNumberOfTrap(20);
                 Potion.setNumberOfPotion(18);
             }
             else if(level == 3){
-                Ship.setNumberOfShip(20);
+                Grid.setNumberOfShip(20);
                 Trap.setNumberOfTrap(30);
                 Potion.setNumberOfPotion(18);
             }
@@ -66,7 +66,7 @@ public class BattleShips {
     }
 
     public static void prepareShips(){
-        Ship.deployShips();
+        Grid.deployShips();
     }
 
     public static void prepareTraps(){
@@ -91,14 +91,14 @@ public class BattleShips {
     public static void playGame(){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
-        int numberOfShips = Ship.getNumberOfShip();
+        int numberOfShips = Grid.getNumberOfShip();
         int numberOfTraps = Trap.getNumberOfTrap();
         int numberOfPotions = Potion.getNumberOfPotion();
         do {
             Random randomGenerator = new Random();
             Scanner input = new Scanner(System.in);
             ArrayList<String> remainingTraps = Trap.getRemainingTraps();
-            ArrayList<String> remainingShips = Ship.getRemainingShips();
+            ArrayList<String> remainingShips = Grid.getRemainingShips();
             
             System.out.print("Enter row coordinate: ");
             x = input.nextInt() -1;
@@ -106,11 +106,11 @@ public class BattleShips {
             y = input.nextInt() -1;
             if ((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols)) //valid guess
             {
-                if (Grid.grid[x][y] != " " && Ship.shipPosition[x][y] != 0) //if ship is already there; loses ship
+                if (Grid.grid[x][y] != " " && Grid.shipPosition[x][y] != 0) //if ship is already there; loses ship
                 {
                     for(int i = 1; i <= numberOfShips; i++){
-                        if(Ship.shipPosition[x][y] == i){
-                           Ship.removeShip(i);
+                        if(Grid.shipPosition[x][y] == i){
+                           Grid.removeShip(i);
                         }  
                     }
                     System.out.println("Boom! You sunk the ship!");
@@ -177,7 +177,7 @@ public class BattleShips {
                         System.out.println("Ship Reveal Potion");
                         if(remainingShips.size() > 0)
                         {
-                            Ship.revealShip(Integer.parseInt(remainingShips.get(0)));
+                            Grid.revealShip(Integer.parseInt(remainingShips.get(0)));
                         }
                         else
                         {
