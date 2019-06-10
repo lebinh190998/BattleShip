@@ -55,7 +55,7 @@ public class Potion {
         Random randomGenerator = new Random();
         int x = randomGenerator.nextInt(Grid.numRows);
         int y = randomGenerator.nextInt(Grid.numCols);
-        if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Trap.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
+        if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Potion.potionsPosition[x][y] == 0))
         {
             Potion.potionsPosition[x][y] = potionNo;
             //Grid.grid[x][y] = "p";
