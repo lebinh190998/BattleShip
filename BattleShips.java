@@ -91,14 +91,14 @@ public class BattleShips {
     public static void playGame(){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
-        int numberOfShips = Grid.getNumberOfShip();
+        //int numberOfShips = Grid.getNumberOfShip();
         int numberOfTraps = Trap.getNumberOfTrap();
         int numberOfPotions = Potion.getNumberOfPotion();
         do {
             Random randomGenerator = new Random();
             Scanner input = new Scanner(System.in);
             ArrayList<String> remainingTraps = Trap.getRemainingTraps();
-            ArrayList<String> remainingShips = Grid.getRemainingShips();
+            ArrayList<Ship> remainingShips = Grid.getRemainingShips();
             
             System.out.print("Enter row coordinate: ");
             x = input.nextInt() -1;
@@ -108,9 +108,9 @@ public class BattleShips {
             {
                 if (Grid.grid[x][y] != " " && Grid.shipPosition[x][y] != 0) //if ship is already there; loses ship
                 {
-                    for(int i = 1; i <= numberOfShips; i++){
-                        if(Grid.shipPosition[x][y] == i){
-                           Grid.removeShip(i);
+                    for(Ship ship : remainingShips){
+                        if(Grid.shipPosition[x][y] == ship.shipNo){
+                           Grid.removeShip(ship);
                         }  
                     }
                     System.out.println("Boom! You sunk the ship!");
@@ -175,14 +175,8 @@ public class BattleShips {
                             }  
                         }
                         System.out.println("Ship Reveal Potion");
-                        if(remainingShips.size() > 0)
-                        {
-                            Grid.revealShip(Integer.parseInt(remainingShips.get(0)));
-                        }
-                        else
-                        {
-                            System.out.println("No more ship to reveal");
-                        }
+
+                           // Grid.revealShip(Integer.parseInt(remainingShips.get(0)));
                     }
                 }
                 else if (Grid.grid[x][y] == "#") 

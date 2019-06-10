@@ -1,16 +1,23 @@
 import java.util.*;
 
 public class Ship {
-    private int shipNo;
-    private int x;
-    private int y;
-    private int length;
+    public int shipNo;
+    public int x;
+    public int y;
+    public int length;
 
     public Ship(int shipNo, int x, int y, int length) {
         this.shipNo = shipNo;
         this.x = x;
         this.y = y;
         this.length = length;
+    }
+
+    public Ship() {
+        this.shipNo = 0;
+        this.x = 0;
+        this.y = 0;
+        this.length = 0;
     }
 
 
