@@ -6,9 +6,7 @@ public class BattleShips {
 
     public static void main(String[] args){
         Grid grid = new Grid(20, 60);
-        //Ship ship = new Ship();
-        Trap trap = new Trap();
-        Potion potion = new Potion();
+
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
 
@@ -25,7 +23,7 @@ public class BattleShips {
         Grid.deployTraps();
 
         //Step 5 - Deploy potions
-        Potion.deployPotions(Grid.numRows, Grid.numCols);
+        Grid.deployPotions(Grid.numRows, Grid.numCols);
 
         //Step 4 Battle
         do {
@@ -47,17 +45,17 @@ public class BattleShips {
             if(level == 1){
                 Grid.setNumberOfShip(80);
                 Grid.setNumberOfTrap(10);
-                Potion.setNumberOfPotion(18);
+                Grid.setNumberOfPotion(18);
             }
             else if(level == 2){
                 Grid.setNumberOfShip(50);
                 Grid.setNumberOfTrap(20);
-                Potion.setNumberOfPotion(18);
+                Grid.setNumberOfPotion(18);
             }
             else if(level == 3){
                 Grid.setNumberOfShip(20);
                 Grid.setNumberOfTrap(30);
-                Potion.setNumberOfPotion(18);
+                Grid.setNumberOfPotion(18);
             }
             else{
                 System.out.println("Please input a number from 1 to 3");
@@ -79,14 +77,13 @@ public class BattleShips {
     public static void playGame(){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
-        //int numberOfShips = Grid.getNumberOfShip();
-        //int numberOfTraps = Trap.getNumberOfTrap();
-        int numberOfPotions = Potion.getNumberOfPotion();
+
         do {
             Random randomGenerator = new Random();
             Scanner input = new Scanner(System.in);
-            ArrayList<Trap> remainingTraps = Grid.getRemainingTraps();
             ArrayList<Ship> remainingShips = Grid.getRemainingShips();
+            ArrayList<Trap> remainingTraps = Grid.getRemainingTraps();
+            ArrayList<Potion> remainingPotions = Grid.getRemainingPotions();
             
             System.out.print("Enter row coordinate: ");
             x = input.nextInt() -1;
@@ -99,7 +96,7 @@ public class BattleShips {
                     for(Ship ship : remainingShips){
                         if(Grid.shipPosition[x][y] == ship.shipNo){
                            Grid.removeShip(ship);
-                        }  
+                        }
                     }
                     System.out.println("Boom! You sunk the ship!");
                     ++BattleShips.playerDestroyedShips;
@@ -119,20 +116,21 @@ public class BattleShips {
                         for(Trap trap : remainingTraps){
                             if(Grid.trapsPosition[x][y] == trap.trapNo){
                                Grid.removeTrap(trap);
-                            }  
+                            }
                         }
                         System.out.println("Oh no, you hit in a High Danger Trap :(");
                         BattleShips.playerLife -= 2;
                     }
                 }
-                else if (Grid.grid[x][y] != " " && Potion.potionsPosition[x][y] != 0) 
+                else if (Grid.grid[x][y] != " " && Grid.potionsPosition[x][y] != 0) 
                 {
+                    System.out.println("entered");
                     int type = randomGenerator.nextInt(3);
                     if(type == 0)
                     {
-                        for(int i = 1; i <= numberOfPotions; i++){
-                            if(Potion.potionsPosition[x][y] == i){
-                               Potion.revealPotion(i);
+                        for(Potion potion : remainingPotions){
+                            if(Grid.potionsPosition[x][y] == potion.potionNo){
+                               Grid.revealPotion(potion);
                             }  
                         }
                         System.out.println("Life Saver Potion, your health increase by 1");
@@ -140,15 +138,20 @@ public class BattleShips {
                     }
                     else if(type == 1)
                     {
-                        for(int i = 1; i <= numberOfPotions; i++){
-                            if(Potion.potionsPosition[x][y] == i){
-                               Potion.revealPotion(i);
+                        for(Potion potion : remainingPotions){
+                            if(Grid.potionsPosition[x][y] == potion.potionNo){
+                               Grid.revealPotion(potion);
                             }
                         }
                         System.out.println("Trap Reveal Potion");
                         if(remainingTraps.size() > 0)
                         {
-                            //Trap.revealTrap(Integer.parseInt(remainingTraps.get(0)));
+                            for(Trap trap : remainingTraps){
+                                if(Grid.grid[trap.x][trap.y] != "t"){
+                                    Grid.revealTrap(trap);
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
@@ -157,14 +160,19 @@ public class BattleShips {
                     }
                     else
                     {
-                        for(int i = 1; i <= numberOfPotions; i++){
-                            if(Potion.potionsPosition[x][y] == i){
-                               Potion.revealPotion(i);
-                            }  
+                        for(Potion potion : remainingPotions){
+                            if(Grid.potionsPosition[x][y] == potion.potionNo){
+                               Grid.revealPotion(potion);
+                            }
                         }
                         System.out.println("Ship Reveal Potion");
 
-                           // Grid.revealShip(Integer.parseInt(remainingShips.get(0)));
+                        for(Ship ship : remainingShips){
+                            if(Grid.grid[ship.x][ship.y] != "0"){
+                                Grid.revealShip(ship);
+                                break;
+                            }
+                        }
                     }
                 }
                 else if (Grid.grid[x][y] == "#") 
