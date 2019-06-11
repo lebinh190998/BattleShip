@@ -226,34 +226,35 @@ public class Grid {
     public static void deployShips(){
         System.out.println("\nDeploying ships");
 
-        randomGenerateShips();
-
-        for (Ship ship : Grid.remainingShips) {
+        int shipNo = 1;
+        while (shipNo <= Grid.ships) {
+            Ship ship = randomGenerateShip(shipNo);
             Grid.placingShip(ship);
+            shipNo++;
         }
     }
 
-    public static void randomGenerateShips(){
+    public static Ship randomGenerateShip(int shipNo){
         Random randomGenerator = new Random();
-        int shipNo = 1;
-        while (shipNo <= Grid.ships) {
+        Ship ship;
+        while (true) {
             int x = randomGenerator.nextInt(Grid.numRows);
             int y = randomGenerator.nextInt(Grid.numCols);
             int length = randomGenerator.nextInt(3) + 3;
             if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols-length) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
             {
-                Ship ship = new Ship(shipNo, x, y, length);
+                ship = new Ship(shipNo, x, y, length);
                 Grid.remainingShips.add(ship);
-
-                shipNo++;
+                break;
             }
         }
+        return ship;
     }
 
     public static void placingShip(Ship ship){
         for(int l = 0; l < ship.length; l++){
             Grid.shipPosition[ship.x][ship.y+l] = ship.shipNo;
-            //Grid.grid[ship.x][ship.y+l] = "c";
+            Grid.grid[ship.x][ship.y+l] = "c";
         }
     }
 
@@ -287,38 +288,42 @@ public class Grid {
     public static void deployTraps(){
         System.out.println("\nDeploying traps");
 
-        randomGenerateTraps();
-
-        for (Trap trap : Grid.remainingTraps) {
+        int trapNo = 1;
+        while(trapNo <= Grid.traps){
+            Trap trap = randomGenerateTrap(trapNo);
             Grid.placingTrap(trap);
+            trapNo++;
         }
     }
 
-    public static void randomGenerateTraps(){
+    public static Trap randomGenerateTrap(int trapNo){
         Random randomGenerator = new Random();
-        int trapNo = 1;
-        while (trapNo <= Grid.traps) {
+        
+        Trap trap;
+        while (true) {
             int x = randomGenerator.nextInt(Grid.numRows);
             int y = randomGenerator.nextInt(Grid.numCols);
             if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
             {
-                Trap trap = new Trap(trapNo, x, y);
+                trap = new Trap(trapNo, x, y);
                 Grid.remainingTraps.add(trap);
 
-                trapNo++;
+                break;
             }
         }
+        return trap;
     }
 
     public static void placingTrap(Trap trap){
         Grid.trapsPosition[trap.x][trap.y] = trap.trapNo;
-        //Grid.grid[trap.x][trap.y] = "t";
+        Grid.grid[trap.x][trap.y] = "t";
     }
 
     public static void removeTrap(Trap trap){
         for(int i = 0; i < Grid.trapsPosition.length; i++) {
             for (int j = 0; j < Grid.trapsPosition[i].length; j++) {
                 if (Grid.trapsPosition[i][j] == trap.trapNo){
+                    System.out.println("entered");
                     Grid.grid[i][j] = " ";
                     Grid.trapsPosition[i][j] = 0;
                 }
@@ -326,14 +331,14 @@ public class Grid {
                 }
             }
         }
-        Grid.remainingTraps.remove(trap);
+        //Grid.remainingTraps.remove(trap);
     }
 
     public static void revealTrap(Trap trap){
         for(int i = 0; i < Grid.trapsPosition.length; i++) {
             for (int j = 0; j < Grid.trapsPosition[i].length; j++) {
                 if (Grid.trapsPosition[i][j] == trap.trapNo){
-                    Grid.grid[i][j] = "t";
+                    Grid.grid[i][j] = "/";
                 }
                 else{
                 }
@@ -344,32 +349,35 @@ public class Grid {
     public static void deployPotions(int numRows, int numCols){
         System.out.println("\nDeploying potions");
 
-        randomGeneratePotions();
-
-        for (Potion potion : Grid.remainingPotions) {
+        
+        int potionNo = 1;
+        while(potionNo <= Grid.potions){
+            Potion potion = randomGeneratePotion(potionNo);
             Grid.placingPotion(potion);
+            potionNo++;
         }
     }
 
-    public static void randomGeneratePotions(){
+    public static Potion randomGeneratePotion(int potionNo){
         Random randomGenerator = new Random();
-        int potionNo = 1;
-        while (potionNo <= Grid.potions) {
+        Potion potion;
+        while (true) {
             int x = randomGenerator.nextInt(Grid.numRows);
             int y = randomGenerator.nextInt(Grid.numCols);
             if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
             {
-                Potion potion = new Potion(potionNo, x, y);
+                potion = new Potion(potionNo, x, y);
                 Grid.remainingPotions.add(potion);
 
-                potionNo++;
+                break;
             }
         }
+        return potion;
     }
 
     public static void placingPotion(Potion potion){
         Grid.potionsPosition[potion.x][potion.y] = potion.potionNo;
-        //Grid.grid[potion.x][potion.y] = "p";
+        Grid.grid[potion.x][potion.y] = "p";
     }
 
     public static void revealPotion(Potion potion){
