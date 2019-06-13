@@ -91,7 +91,7 @@ public class BattleShips {
                 {
                     BattleShips.hitShipAction(x, y);
                 }
-                else if (Grid.displayGrid[x][y] != " " && Grid.trapsPosition[x][y] != 0)
+                else if (Grid.displayGrid[x][y] != " " && Grid.checkingGrid[x][y] == "t")
                 {
                     BattleShips.hitTrapAction(x, y);
                 }
@@ -129,25 +129,22 @@ public class BattleShips {
 
     public static void hitTrapAction(int x, int y){
         ArrayList<Trap> remainingTraps = Grid.getRemainingTraps();
-        Random randomGenerator = new Random();
-        int type = randomGenerator.nextInt(2);
-        if(type == 0){
-            for(Trap trap : remainingTraps){
-                if(Grid.trapsPosition[x][y] == trap.trapNo){
-                   Grid.removeTrap(trap);
+        for(Trap trap : remainingTraps){
+            int trapX = trap.getX();
+            int trapY = trap.getY();
+            if(x == trapX && y == trapY){
+                if(trap instanceof HighTrap){
+                    System.out.println("Oh no, you hit in a High Danger Trap :(");
+                    HighTrap highTrap = (HighTrap)trap;
+                    BattleShips.playerLife -= highTrap.getDamage();
+                }else if (trap instanceof LowTrap){
+                    System.out.println("Oh no, you hit in a Low Danger Trap :(");
+                    LowTrap lowTrap = (LowTrap)trap;
+                    BattleShips.playerLife -= lowTrap.getDamage();
                 }
+                Grid.removeTrap(trap);
             }
-            System.out.println("Oh no, you hit in a Low Danger Trap :(");
-            --BattleShips.playerLife;
-        }else{
-            for(Trap trap : remainingTraps){
-                if(Grid.trapsPosition[x][y] == trap.trapNo){
-                   Grid.removeTrap(trap);
-                }
-            }
-            System.out.println("Oh no, you hit in a High Danger Trap :(");
-            BattleShips.playerLife -= 2;
-        } 
+        }
     }
 
     public static void hitPotionAction(int x, int y){
@@ -176,10 +173,10 @@ public class BattleShips {
             System.out.println("Trap Reveal Potion");
 
             for(Trap trap : remainingTraps){
-                if(Grid.displayGrid[trap.x][trap.y] != "t"){
-                    Grid.revealTrap(trap);
-                    break;
-                }
+                //if(Grid.displayGrid[trap.x][trap.y] != "t"){
+                    //Grid.revealTrap(trap);
+                    //break;
+                //}
             }
         }
         else
