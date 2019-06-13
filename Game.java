@@ -1,85 +1,92 @@
 import java.util.*;
 
 public class Game {
-    private static int ships;
-    private static ArrayList<Ship> allShips;
+    private int ships;
+    private ArrayList<Ship> allShips;
 
-    private static int traps;
-    private static ArrayList<Trap> allTraps;
+    private int traps;
+    private ArrayList<Trap> allTraps;
 
-    private static int potions;
-    private static ArrayList<Potion> allPotions;
+    private int potions;
+    private ArrayList<Potion> allPotions;
     
 
     public Game() {
-        Game.ships = 0;
-        Game.allShips = new ArrayList<Ship>();
+        this.ships = 0;
+        this.allShips = new ArrayList<Ship>();
 
-        Game.traps = 0;
-        Game.allTraps = new ArrayList<Trap>();
+        this.traps = 0;
+        this.allTraps = new ArrayList<Trap>();
 
-        Game.potions = 0;
-        Game.allPotions = new ArrayList<Potion>();
+        this.potions = 0;
+        this.allPotions = new ArrayList<Potion>();
     }
 
     // Getter
-    public static int getNumberOfShip() {
-        return Game.ships;
+    public int getShips() {
+        return this.ships;
     }
-    public static ArrayList<Ship> getAllShips() {
-        return Game.allShips;
-    }
-
-    public static int getNumberOfTrap() {
-        return Game.traps;
-    }
-    public static ArrayList<Trap> getAllTraps() {
-        return Game.allTraps;
+    public ArrayList<Ship> getAllShips() {
+        return this.allShips;
     }
 
-    public static int getNumberOfPotion() {
-        return Game.potions;
+    public int getTraps() {
+        return this.traps;
     }
-    public static ArrayList<Potion> getAllPotions() {
-        return Game.allPotions;
+    public ArrayList<Trap> getAllTraps() {
+        return this.allTraps;
+    }
+
+    public int getPotions() {
+        return this.potions;
+    }
+    public ArrayList<Potion> getAllPotions() {
+        return this.allPotions;
     }
 
     // Setter
-    public static void setNumberOfShip(int newNumberOfShip) {
-        Game.ships = newNumberOfShip;
+    public void setShips(int newNumberOfShip) {
+        this.ships = newNumberOfShip;
     }
-    public static void setAllShips(ArrayList<Ship> newAllShips) {
-        Game.allShips = newAllShips;
-    }
-
-    public static void setNumberOfTrap(int newNumberOfTrap) {
-        Game.traps = newNumberOfTrap;
-    }
-    public static void setAllTraps(ArrayList<Trap> newAllTraps) {
-        Game.allTraps = newAllTraps;
+    public void setAllShips(ArrayList<Ship> newAllShips) {
+        this.allShips = newAllShips;
     }
 
-    public static void setNumberOfPotion(int newNumberOfPotion) {
-        Game.potions = newNumberOfPotion;
+    public void setTraps(int newNumberOfTrap) {
+        this.traps = newNumberOfTrap;
     }
-    public static void setAllPotions(ArrayList<Potion> newAllPotions) {
-        Game.allPotions = newAllPotions;
+    public void setAllTraps(ArrayList<Trap> newAllTraps) {
+        this.allTraps = newAllTraps;
+    }
+
+    public void setPotions(int newNumberOfPotion) {
+        this.potions = newNumberOfPotion;
+    }
+    public void setAllPotions(ArrayList<Potion> newAllPotions) {
+        this.allPotions = newAllPotions;
     }
 
     
-    public static void deployShips(Ocean ocean){
+    public void deployShips(Game game, Ocean ocean){
         System.out.println("\nDeploying ships");
 
         int shipNo = 1;
-        while (shipNo <= Game.ships) {
+        int ships = game.getShips();
+        while (shipNo <= ships) {
             Ship ship = Ship.randomGenerateShip(ocean);
-            Game.placingShip(ship, ocean);
-            Game.allShips.add(ship);
+            game.placingShip(ship, ocean);
+            addToShipsList(ship, game);
             shipNo++;
         }
     }
+
+    private void addToShipsList(Ship ship, Game game){
+        ArrayList<Ship> allShips = game.getAllShips();
+        allShips.add(ship);
+        game.setAllShips(allShips);
+    }
     
-    public static void placingShip(Ship ship, Ocean ocean){
+    private void placingShip(Ship ship, Ocean ocean){
         int x = ship.getX();
         ArrayList<Integer> ys = ship.getY();
         String[][] displayGrid = ocean.getDisplayGrid();
@@ -93,7 +100,7 @@ public class Game {
     }
 
     
-    public static void removeShip(Ship ship, Ocean ocean){
+    public void removeShip(Ship ship, Ocean ocean){
         int x = ship.getX();
         ArrayList<Integer> shipY = ship.getY();
         String[][] checkingGrid = ocean.getCheckingGrid();
@@ -109,8 +116,9 @@ public class Game {
         ocean.setheckingGrid(checkingGrid);
     }
     
-    public static void revealShip(Ocean ocean){
-        for(Ship ship : Game.allShips){
+    public void revealShip(Ocean ocean, Game game){
+        ArrayList<Ship> allShips = game.getAllShips();
+        for(Ship ship : allShips){
             boolean isSunk = ship.getIsSunk();
             boolean isReveal = ship.getIsReveal();
             if(isSunk == false && isReveal == false){
@@ -132,19 +140,26 @@ public class Game {
     
 
     
-    public static void deployTraps(Ocean ocean){
+    public void deployTraps(Game game, Ocean ocean){
         System.out.println("\nDeploying traps");
 
         int trapNo = 1;
-        while(trapNo <= Game.traps){
+        int traps = game.getTraps();
+        while(trapNo <= traps){
             Trap trap = Trap.randomGenerateTrap(ocean);
-            Game.placingTrap(trap, ocean);
-            Game.allTraps.add(trap);
+            game.placingTrap(trap, ocean);
+            addToTrapsList(trap, game);
             trapNo++;
         }
     }
 
-    public static void placingTrap(Trap trap, Ocean ocean){
+    private void addToTrapsList(Trap trap, Game game){
+        ArrayList<Trap> allTraps = game.getAllTraps();
+        allTraps.add(trap);
+        game.setAllTraps(allTraps);
+    }
+
+    public void placingTrap(Trap trap, Ocean ocean){
         int x = trap.getX();
         int y = trap.getY();
         String[][] displayGrid = ocean.getDisplayGrid();
@@ -158,7 +173,7 @@ public class Game {
         
     }
     
-    public static void removeTrap(Trap trap, Ocean ocean){
+    public void removeTrap(Trap trap, Ocean ocean){
         int x = trap.getX();
         int y = trap.getY();
         String[][] displayGrid = ocean.getDisplayGrid();
@@ -172,8 +187,9 @@ public class Game {
         ocean.setheckingGrid(checkingGrid);
     }
     
-    public static void revealTrap(Ocean ocean){
-        for(Trap trap : Game.allTraps){
+    public void revealTrap(Ocean ocean, Game game){
+        ArrayList<Trap> allTraps = game.getAllTraps();
+        for(Trap trap : allTraps){
             boolean isRemove = trap.getIsRemove();
             boolean isReveal = trap.getIsReveal();
             if(isRemove== false && isReveal == false){
@@ -194,20 +210,27 @@ public class Game {
         }
     }
 
-    public static void deployPotions(Ocean ocean){
+    public void deployPotions(Game game, Ocean ocean){
         System.out.println("\nDeploying potions");
 
         
         int potionNo = 1;
-        while(potionNo <= Game.potions){
+        int potions = game.getPotions();
+        while(potionNo <= potions){
             Potion potion = Potion.randomGeneratePotion(ocean);
-            Game.placingPotion(potion, ocean);
-            Game.allPotions.add(potion);
+            game.placingPotion(potion, ocean);
+            addToPotionsList(potion, game);
             potionNo++;
         }
     }
 
-    public static void placingPotion(Potion potion, Ocean ocean){
+    private void addToPotionsList(Potion potion, Game game){
+        ArrayList<Potion> allPotions = game.getAllPotions();
+        allPotions.add(potion);
+        game.setAllPotions(allPotions);
+    }
+
+    public void placingPotion(Potion potion, Ocean ocean){
         int x = potion.getX();
         int y = potion.getY();
         String[][] displayGrid = ocean.getDisplayGrid();
@@ -220,7 +243,7 @@ public class Game {
         ocean.setheckingGrid(checkingGrid);
     }
 
-    public static void removePotion(Potion potion, Ocean ocean){
+    public void removePotion(Potion potion, Ocean ocean){
         int x = potion.getX();
         int y = potion.getY();
         String[][] displayGrid = ocean.getDisplayGrid();
