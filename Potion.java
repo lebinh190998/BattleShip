@@ -1,27 +1,16 @@
 import java.util.*;
 
 public class Potion {
-    public int potionNo;
-    public int x;
-    public int y;
+    private int x;
+    private int y;
 
-    public Potion(int potionNo, int x, int y) {
-        this.potionNo = potionNo;
+    public Potion(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public Potion() {
-        this.potionNo = 0;
-        this.x = 0;
-        this.y = 0;
-    }
-
 
     // Getter
-    public int getPotionNo() {
-        return this.potionNo;
-    }
     public int getX() {
         return this.x;
     }
@@ -31,13 +20,33 @@ public class Potion {
 
 
     // Setter
-    public void setPotionNo(int newPotionNo) {
-        this.potionNo = newPotionNo;
-    }
     public void setX(int newX) {
         this.x = newX;
     }
     public void setY(int newY) {
         this.y = newY;
+    }
+
+    public static Potion randomGeneratePotion(Ocean ocean){
+        Random randomGenerator = new Random();
+        int numRows = ocean.getRows();
+        int numCols = ocean.getCols();
+        String[][] checkingGrid = ocean.getCheckingGrid();
+        while (true) {
+            int x = randomGenerator.nextInt(numRows);
+            int y = randomGenerator.nextInt(numCols);
+
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols) && checkingGrid[x][y] == "#")
+            {
+                int type = randomGenerator.nextInt(3);
+                if(type == 0){
+                    return new LifePotion(x, y);
+                }else if(type == 1){
+                    return new ShipPotion(x, y);
+                }else{
+                    return new TrapPotion(x, y);
+                }
+            }
+        }
     }
 }

@@ -3,10 +3,14 @@ import java.util.*;
 public class Trap {
     private int x;
     private int y;
+    private boolean isRemove;
+    private boolean isReveal;
 
     public Trap(int x, int y) {
         this.x = x;
         this.y = y;
+        this.isRemove = false;
+        this.isReveal = false;
     }
 
 
@@ -17,6 +21,12 @@ public class Trap {
     public int getY() {
         return this.y;
     }
+    public boolean getIsRemove() {
+        return this.isRemove;
+    }
+    public boolean getIsReveal() {
+        return this.isReveal;
+    }
 
 
     // Setter
@@ -26,9 +36,18 @@ public class Trap {
     public void setY(int newY) {
         this.y = newY;
     }
+    public void setIsRemove(boolean result) {
+        this.isRemove= result;
+    }
+    public void setIsReveal(boolean result) {
+        this.isReveal= result;
+    }
 
-    public static Trap randomGenerateTrap(String[][] checkingGrid, int numRows, int numCols){
+    public static Trap randomGenerateTrap(Ocean ocean){
         Random randomGenerator = new Random();
+        int numRows = ocean.getRows();
+        int numCols = ocean.getCols();
+        String[][] checkingGrid = ocean.getCheckingGrid();
         while (true) {
             int x = randomGenerator.nextInt(numRows);
             int y = randomGenerator.nextInt(numCols);

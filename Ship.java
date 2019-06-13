@@ -5,12 +5,14 @@ public class Ship {
     private ArrayList<Integer> y = new ArrayList<Integer>();
     private int length;
     private boolean isSunk;
+    private boolean isReveal;
 
     public Ship(int x, ArrayList<Integer> y , int length) {
         this.x = x;
         this.y = y;
         this.length = length;
         this.isSunk = false;
+        this.isReveal = false;
     }
 
 
@@ -27,6 +29,9 @@ public class Ship {
     public boolean getIsSunk() {
         return this.isSunk;
     }
+    public boolean getIsReveal() {
+        return this.isReveal;
+    }
 
 
     // Setter
@@ -42,9 +47,15 @@ public class Ship {
     public void setIsSunk(boolean result) {
         this.isSunk= result;
     }
+    public void setIsReveal(boolean result) {
+        this.isReveal= result;
+    }
 
-    public static Ship randomGenerateShip(String[][] checkingGrid, int numRows, int numCols){
+    public static Ship randomGenerateShip(Ocean ocean){
         Random randomGenerator = new Random();
+        int numRows = ocean.getRows();
+        int numCols = ocean.getCols();
+        String[][] checkingGrid = ocean.getCheckingGrid();
         while (true) {
             int x = randomGenerator.nextInt(numRows);
             int y = randomGenerator.nextInt(numCols);

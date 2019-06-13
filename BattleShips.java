@@ -5,7 +5,7 @@ public class BattleShips {
     public static int playerLife = 15;
 
     public static void main(String[] args){
-        Grid grid = new Grid(20, 60);
+        Game game = new Game();
 
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
@@ -14,20 +14,21 @@ public class BattleShips {
         setDifficulty();
 
         //Step 2 – Create the ocean map
-        Grid.createOceanMap();
+        Ocean ocean = Ocean.createOceanMap(20, 60);
+        Ocean.printOceanMap(ocean);
 
         //Step 3 - Deploy ships
-        Grid.deployShips();
+        Game.deployShips(ocean);
 
         //Step 4 - Deploy traps
-        Grid.deployTraps();
+        Game.deployTraps(ocean);
 
         //Step 5 - Deploy potions
-        Grid.deployPotions(Grid.numRows, Grid.numCols);
+        Game.deployPotions(ocean);
 
         //Step 4 Battle
         do {
-            Battle();
+            Battle(ocean);
         }while(BattleShips.playerDestroyedShips < 5 && BattleShips.playerLife > 0);
 
         //Step 5 - Game over
@@ -43,19 +44,19 @@ public class BattleShips {
             level = input.nextInt();
     
             if(level == 1){
-                Grid.setNumberOfShip(80);
-                Grid.setNumberOfTrap(10);
-                Grid.setNumberOfPotion(18);
+                Game.setNumberOfShip(80);
+                Game.setNumberOfTrap(10);
+                Game.setNumberOfPotion(18);
             }
             else if(level == 2){
-                Grid.setNumberOfShip(50);
-                Grid.setNumberOfTrap(20);
-                Grid.setNumberOfPotion(18);
+                Game.setNumberOfShip(50);
+                Game.setNumberOfTrap(20);
+                Game.setNumberOfPotion(18);
             }
             else if(level == 3){
-                Grid.setNumberOfShip(20);
-                Grid.setNumberOfTrap(30);
-                Grid.setNumberOfPotion(18);
+                Game.setNumberOfShip(20);
+                Game.setNumberOfTrap(30);
+                Game.setNumberOfPotion(18);
             }
             else{
                 System.out.println("Please input a number from 1 to 3");
@@ -63,9 +64,9 @@ public class BattleShips {
         }while(level != 1 && level != 2 && level != 3);
     }
     
-    public static void Battle(){
-        playGame();
-        Grid.printOceanMap();
+    public static void Battle(Ocean ocean){
+        playGame(ocean);
+        Ocean.printOceanMap(ocean);
         System.out.println();
         System.out.println("Ships found: " + BattleShips.playerDestroyedShips);
         System.out.println("Life left: " + BattleShips.playerLife);
@@ -74,62 +75,66 @@ public class BattleShips {
     
 
 
-    public static void playGame(){
+    public static void playGame(Ocean ocean){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
+        int numRows = ocean.getRows();
+        int numCols = ocean.getCols();
 
         do {
             Scanner input = new Scanner(System.in);
+            String[][] checkingGrid = ocean.getCheckingGrid();
+            String[][] displayGrid = ocean.getDisplayGrid();
             
             System.out.print("Enter row coordinate: ");
             x = input.nextInt() -1;
             System.out.print("Enter column coordinate: ");
             y = input.nextInt() -1;
-            if ((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols))
+            if ((x >= 0 && x < numRows) && (y >= 0 && y < numCols))
             {
-                if (Grid.displayGrid[x][y] != " " && Grid.checkingGrid[x][y] == "c")
+                if (displayGrid[x][y] != " " && checkingGrid[x][y] == "c")
                 {
-                    BattleShips.hitShipAction(x, y);
+                    BattleShips.hitShipAction(x, y, ocean);
                 }
-                else if (Grid.displayGrid[x][y] != " " && Grid.checkingGrid[x][y] == "t")
+                else if (displayGrid[x][y] != " " && checkingGrid[x][y] == "t")
                 {
-                    BattleShips.hitTrapAction(x, y);
+                    BattleShips.hitTrapAction(x, y, ocean);
                 }
-                else if (Grid.displayGrid[x][y] != " " && Grid.potionsPosition[x][y] != 0) 
+                else if (displayGrid[x][y] != " " && checkingGrid[x][y] == "p") 
                 {
-                    BattleShips.hitPotionAction(x, y);
+                    BattleShips.hitPotionAction(x, y, ocean);
                 }
-                else if (Grid.displayGrid[x][y] == "#") 
+                else if (displayGrid[x][y] == "#") 
                 {
                     System.out.println("Sorry, you missed");
-                    Grid.displayGrid[x][y] = " ";
+                    displayGrid[x][y] = " ";
                 }
-                else if (Grid.displayGrid[x][y] == " " || Grid.displayGrid[x][y] == "!") 
+                else if (displayGrid[x][y] == " " || displayGrid[x][y] == "!") 
                 {
                     System.out.println("You have chosen that position");
                 }
             }
-            else if ((x < 0 || x >= Grid.numRows) || (y < 0 || y >= Grid.numCols))
-                System.out.println("You can't chose position outside the " + Grid.numRows + " by " + Grid.numCols + " grid");
-        }while((x < 0 || x >= Grid.numRows) || (y < 0 || y >= Grid.numCols));
+            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols))
+                System.out.println("You can't chose position outside the " + numRows + " by " + numCols + " grid");
+        }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));
     }
 
-    public static void hitShipAction(int x, int y){
-        ArrayList<Ship> remainingShips = Grid.getRemainingShips();
-        for(Ship ship : remainingShips){
+    public static void hitShipAction(int x, int y, Ocean ocean){
+        ArrayList<Ship> allShips = Game.getAllShips();
+        for(Ship ship : allShips){
             int shipX = ship.getX();
             ArrayList<Integer> shipY = ship.getY();
             if(x == shipX && shipY.contains(y)){
-                Grid.removeShip(ship);
+                Game.removeShip(ship, ocean);
             }
         }
         System.out.println("Boom! You sunk the ship!");
         ++BattleShips.playerDestroyedShips;
     }
 
-    public static void hitTrapAction(int x, int y){
-        ArrayList<Trap> remainingTraps = Grid.getRemainingTraps();
-        for(Trap trap : remainingTraps){
+    public static void hitTrapAction(int x, int y, Ocean ocean){
+        ArrayList<Trap> allTraps = Game.getAllTraps();
+        for(Trap trap : allTraps){
             int trapX = trap.getX();
             int trapY = trap.getY();
             if(x == trapX && y == trapY){
@@ -142,59 +147,30 @@ public class BattleShips {
                     LowTrap lowTrap = (LowTrap)trap;
                     BattleShips.playerLife -= lowTrap.getDamage();
                 }
-                Grid.removeTrap(trap);
+                Game.removeTrap(trap,ocean);
             }
         }
     }
 
-    public static void hitPotionAction(int x, int y){
-        ArrayList<Ship> remainingShips = Grid.getRemainingShips();
-        ArrayList<Trap> remainingTraps = Grid.getRemainingTraps();
-        ArrayList<Potion> remainingPotions = Grid.getRemainingPotions();
-        Random randomGenerator = new Random();
-        int type = randomGenerator.nextInt(3);
-        if(type == 0)
-        {
-            for(Potion potion : remainingPotions){
-                if(Grid.potionsPosition[x][y] == potion.potionNo){
-                   Grid.revealPotion(potion);
-                }  
-            }
-            System.out.println("Life Saver Potion, your health increase by 1");
-            ++BattleShips.playerLife;
-        }
-        else if(type == 1)
-        {
-            for(Potion potion : remainingPotions){
-                if(Grid.potionsPosition[x][y] == potion.potionNo){
-                   Grid.revealPotion(potion);
-                }
-            }
-            System.out.println("Trap Reveal Potion");
+    public static void hitPotionAction(int x, int y, Ocean ocean){
+        ArrayList<Potion> allPotions = Game.getAllPotions();
 
-            for(Trap trap : remainingTraps){
-                //if(Grid.displayGrid[trap.x][trap.y] != "t"){
-                    //Grid.revealTrap(trap);
-                    //break;
-                //}
-            }
-        }
-        else
-        {
-            for(Potion potion : remainingPotions){
-                if(Grid.potionsPosition[x][y] == potion.potionNo){
-                   Grid.revealPotion(potion);
+        for(Potion potion : allPotions){
+            int potionX = potion.getX();
+            int potionY = potion.getY();
+            if(x == potionX && y == potionY){
+                if(potion instanceof LifePotion){
+                    System.out.println("Life Saver Potion, your health increase by 1");
+                    LifePotion lifePotion = (LifePotion)potion;
+                    BattleShips.playerLife += lifePotion.getLife();
+                }else if (potion instanceof ShipPotion){
+                    System.out.println("Ship Reveal Potion");
+                    Game.revealShip(ocean);
+                }else if (potion instanceof TrapPotion){
+                    System.out.println("Trap Reveal Potion");
+                    Game.revealTrap(ocean);
                 }
-            }
-            System.out.println("Ship Reveal Potion");
-
-            for(Ship ship : remainingShips){
-                /*
-                if(Grid.grid[ship.x][ship.y] != "0"){
-                    Grid.revealShip(ship);
-                    break;
-                }
-                */
+                Game.removePotion(potion, ocean);
             }
         }
     }
