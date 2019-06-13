@@ -87,24 +87,24 @@ public class BattleShips {
             y = input.nextInt() -1;
             if ((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols))
             {
-                if (Grid.grid[x][y] != " " && Grid.shipPosition[x][y] != 0)
+                if (Grid.displayGrid[x][y] != " " && Grid.checkingGrid[x][y] == "c")
                 {
                     BattleShips.hitShipAction(x, y);
                 }
-                else if (Grid.grid[x][y] != " " && Grid.trapsPosition[x][y] != 0)
+                else if (Grid.displayGrid[x][y] != " " && Grid.trapsPosition[x][y] != 0)
                 {
                     BattleShips.hitTrapAction(x, y);
                 }
-                else if (Grid.grid[x][y] != " " && Grid.potionsPosition[x][y] != 0) 
+                else if (Grid.displayGrid[x][y] != " " && Grid.potionsPosition[x][y] != 0) 
                 {
                     BattleShips.hitPotionAction(x, y);
                 }
-                else if (Grid.grid[x][y] == "#") 
+                else if (Grid.displayGrid[x][y] == "#") 
                 {
                     System.out.println("Sorry, you missed");
-                    Grid.grid[x][y] = " ";
+                    Grid.displayGrid[x][y] = " ";
                 }
-                else if (Grid.grid[x][y] == " " || Grid.grid[x][y] == "!") 
+                else if (Grid.displayGrid[x][y] == " " || Grid.displayGrid[x][y] == "!") 
                 {
                     System.out.println("You have chosen that position");
                 }
@@ -117,9 +117,10 @@ public class BattleShips {
     public static void hitShipAction(int x, int y){
         ArrayList<Ship> remainingShips = Grid.getRemainingShips();
         for(Ship ship : remainingShips){
-            if(Grid.shipPosition[x][y] == ship.shipNo){
-                System.out.println("entered");
-               Grid.removeShip(ship);
+            int shipX = ship.getX();
+            ArrayList<Integer> shipY = ship.getY();
+            if(x == shipX && shipY.contains(y)){
+                Grid.removeShip(ship);
             }
         }
         System.out.println("Boom! You sunk the ship!");
@@ -175,7 +176,7 @@ public class BattleShips {
             System.out.println("Trap Reveal Potion");
 
             for(Trap trap : remainingTraps){
-                if(Grid.grid[trap.x][trap.y] != "t"){
+                if(Grid.displayGrid[trap.x][trap.y] != "t"){
                     Grid.revealTrap(trap);
                     break;
                 }
@@ -191,10 +192,12 @@ public class BattleShips {
             System.out.println("Ship Reveal Potion");
 
             for(Ship ship : remainingShips){
+                /*
                 if(Grid.grid[ship.x][ship.y] != "0"){
                     Grid.revealShip(ship);
                     break;
                 }
+                */
             }
         }
     }

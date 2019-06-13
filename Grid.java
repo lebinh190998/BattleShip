@@ -3,7 +3,8 @@ import java.util.*;
 public class Grid {
     public static int numRows;
     public static int numCols;
-    public static String[][] grid;
+    public static String[][] displayGrid;
+    public static String[][] checkingGrid;
 
     private static int ships;
     private static ArrayList<Ship> remainingShips;
@@ -21,7 +22,8 @@ public class Grid {
     public Grid(int numRows, int numCols) {
         Grid.numRows = numRows;
         Grid.numCols = numCols;
-        Grid.grid = new String[numRows][numCols];
+        Grid.displayGrid = new String[numRows][numCols];
+        Grid.checkingGrid = new String[numRows][numCols];
 
         Grid.ships = 0;
         Grid.shipPosition = new int[numRows][numCols];
@@ -43,8 +45,11 @@ public class Grid {
     public static int getCols() {
         return numCols;
     }
-    public static String[][] getGrid() {
-        return grid;
+    public static String[][] getDisplayGrid() {
+        return displayGrid;
+    }
+    public static String[][] getCheckingGrid() {
+        return checkingGrid;
     }
 
     public static int getNumberOfShip() {
@@ -84,8 +89,11 @@ public class Grid {
     public static void setCols(int newCols) {
         Grid.numCols = newCols;
     }
-    public static void setGrid(String[][] newGrid) {
-        Grid.grid = newGrid;
+    public static void setDisplayGrid(String[][] newGrid) {
+        Grid.displayGrid = newGrid;
+    }
+    public static void setheckingGrid(String[][] newGrid) {
+        Grid.checkingGrid = newGrid;
     }
 
     public static void setNumberOfShip(int newNumberOfShip) {
@@ -143,24 +151,30 @@ public class Grid {
         System.out.println();
 
         //Middle section of Ocean Map
-        for(int i = 0; i < Grid.grid.length; i++) {
-            for (int j = 0; j < Grid.grid[i].length; j++) {
-                Grid.grid[i][j] = "#";
+        for(int i = 0; i < Grid.displayGrid.length; i++) {
+            for (int j = 0; j < Grid.displayGrid[i].length; j++) {
+                Grid.displayGrid[i][j] = "#";
                 if (j == 0){
                     if((i+1) < 10){
-                        System.out.print(" " + (i+1) + "|" + Grid.grid[i][j]);
+                        System.out.print(" " + (i+1) + "|" + Grid.displayGrid[i][j]);
                     }else{
-                        System.out.print((i+1) + "|" + Grid.grid[i][j]);
+                        System.out.print((i+1) + "|" + Grid.displayGrid[i][j]);
                     }
                 }
-                else if (j == Grid.grid[i].length - 1){
-                    System.out.print(Grid.grid[i][j] + "|");
+                else if (j == Grid.displayGrid[i].length - 1){
+                    System.out.print(Grid.displayGrid[i][j] + "|");
                 }
                 else{
-                    System.out.print(Grid.grid[i][j]);
+                    System.out.print(Grid.displayGrid[i][j]);
                 }
             }
             System.out.println();
+        }
+        //Create checking Map
+        for(int i = 0; i < Grid.checkingGrid.length; i++) {
+            for (int j = 0; j < Grid.checkingGrid[i].length; j++) {
+                Grid.checkingGrid[i][j] = "#";
+            }
         }
 
         //Last section of Ocean Map
@@ -196,21 +210,21 @@ public class Grid {
         System.out.println();
 
         //Middle section of Ocean Map
-        for(int i = 0; i < Grid.grid.length; i++) {
-            for (int j = 0; j < Grid.grid[i].length; j++) {
+        for(int i = 0; i < Grid.displayGrid.length; i++) {
+            for (int j = 0; j < Grid.displayGrid[i].length; j++) {
                 if (j == 0){
                     if((i+1) < 10){
 
-                        System.out.print(" " + (i+1) + "|" + Grid.grid[i][j]);
+                        System.out.print(" " + (i+1) + "|" + Grid.displayGrid[i][j]);
                     }else{
-                        System.out.print((i+1) + "|" + Grid.grid[i][j]);
+                        System.out.print((i+1) + "|" + Grid.displayGrid[i][j]);
                     }
                 }
-                else if (j == Grid.grid[i].length - 1){
-                    System.out.print(Grid.grid[i][j] + "|");
+                else if (j == Grid.displayGrid[i].length - 1){
+                    System.out.print(Grid.displayGrid[i][j] + "|");
                 }
                 else{
-                    System.out.print(Grid.grid[i][j]);
+                    System.out.print(Grid.displayGrid[i][j]);
                 }
             }
             System.out.println();
@@ -228,12 +242,14 @@ public class Grid {
 
         int shipNo = 1;
         while (shipNo <= Grid.ships) {
-            Ship ship = randomGenerateShip(shipNo);
+            Ship ship = Ship.randomGenerateShip(Grid.checkingGrid, Grid.numRows, Grid.numCols);
             Grid.placingShip(ship);
+            Grid.remainingShips.add(ship);
             shipNo++;
         }
     }
 
+    /*
     public static Ship randomGenerateShip(int shipNo){
         Random randomGenerator = new Random();
         Ship ship;
@@ -250,37 +266,34 @@ public class Grid {
         }
         return ship;
     }
+    */
 
     public static void placingShip(Ship ship){
-        for(int l = 0; l < ship.length; l++){
-            Grid.shipPosition[ship.x][ship.y+l] = ship.shipNo;
-            Grid.grid[ship.x][ship.y+l] = "c";
+        int x = ship.getX();
+        ArrayList<Integer> ys = ship.getY();
+        for(int y : ys){
+            Grid.displayGrid[x][y] = "0";
+            Grid.checkingGrid[x][y] = "c";
         }
     }
 
     
     public static void removeShip(Ship ship){
-        for(int i = 0; i < Grid.shipPosition.length; i++) {
-            for (int j = 0; j < Grid.shipPosition[i].length; j++) {
-                if (Grid.shipPosition[i][j] == ship.shipNo){
-                    Grid.grid[i][j] = "!";
-                    Grid.shipPosition[i][j] = 0;
-                }
-                else{
-                }
-            }
+        int x = ship.getX();
+        ship.setIsSunk(true);
+        ArrayList<Integer> shipY = ship.getY();
+        for(int y : shipY) {
+            Grid.displayGrid[x][y] = "!";
+            Grid.checkingGrid[x][y] = "!";
         }
     }
 
     public static void revealShip(Ship ship){
-        for(int i = 0; i < Grid.shipPosition.length; i++) {
-            for (int j = 0; j < Grid.shipPosition[i].length; j++) {
-                if (Grid.shipPosition[i][j] == ship.shipNo){
-                    Grid.grid[i][j] = "0";
-                }
-                else{
-                }
-            }
+        int x = ship.getX();
+        ArrayList<Integer> shipY = ship.getY();
+        for(int y : shipY) {
+            Grid.displayGrid[x][y] = "0";
+            Grid.checkingGrid[x][y] = "0";
         }
     }
 
@@ -303,7 +316,7 @@ public class Grid {
         while (true) {
             int x = randomGenerator.nextInt(Grid.numRows);
             int y = randomGenerator.nextInt(Grid.numCols);
-            if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
+            if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.displayGrid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
             {
                 trap = new Trap(trapNo, x, y);
                 Grid.remainingTraps.add(trap);
@@ -316,7 +329,7 @@ public class Grid {
 
     public static void placingTrap(Trap trap){
         Grid.trapsPosition[trap.x][trap.y] = trap.trapNo;
-        Grid.grid[trap.x][trap.y] = "t";
+        Grid.checkingGrid[trap.x][trap.y] = "t";
     }
 
     public static void removeTrap(Trap trap){
@@ -324,7 +337,7 @@ public class Grid {
             for (int j = 0; j < Grid.trapsPosition[i].length; j++) {
                 if (Grid.trapsPosition[i][j] == trap.trapNo){
                     System.out.println("entered");
-                    Grid.grid[i][j] = " ";
+                    Grid.displayGrid[i][j] = " ";
                     Grid.trapsPosition[i][j] = 0;
                 }
                 else{
@@ -338,7 +351,7 @@ public class Grid {
         for(int i = 0; i < Grid.trapsPosition.length; i++) {
             for (int j = 0; j < Grid.trapsPosition[i].length; j++) {
                 if (Grid.trapsPosition[i][j] == trap.trapNo){
-                    Grid.grid[i][j] = "/";
+                    Grid.displayGrid[i][j] = "/";
                 }
                 else{
                 }
@@ -364,7 +377,7 @@ public class Grid {
         while (true) {
             int x = randomGenerator.nextInt(Grid.numRows);
             int y = randomGenerator.nextInt(Grid.numCols);
-            if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.grid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
+            if((x >= 0 && x < Grid.numRows) && (y >= 0 && y < Grid.numCols) && (Grid.displayGrid[x][y] == "#") && (Grid.shipPosition[x][y] == 0) && (Grid.trapsPosition[x][y] == 0) && (Grid.potionsPosition[x][y] == 0))
             {
                 potion = new Potion(potionNo, x, y);
                 Grid.remainingPotions.add(potion);
@@ -377,14 +390,14 @@ public class Grid {
 
     public static void placingPotion(Potion potion){
         Grid.potionsPosition[potion.x][potion.y] = potion.potionNo;
-        Grid.grid[potion.x][potion.y] = "p";
+        Grid.checkingGrid[potion.x][potion.y] = "p";
     }
 
     public static void revealPotion(Potion potion){
         for(int i = 0; i < Grid.potionsPosition.length; i++) {
             for (int j = 0; j < Grid.potionsPosition[i].length; j++) {
                 if (Grid.potionsPosition[i][j] == potion.potionNo){
-                    Grid.grid[i][j] = " ";
+                    Grid.displayGrid[i][j] = " ";
                     Grid.potionsPosition[i][j] = 0;
                 }
                 else{

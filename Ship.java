@@ -1,52 +1,70 @@
 import java.util.*;
 
 public class Ship {
-    public int shipNo;
-    public int x;
-    public int y;
-    public int length;
+    private int x;
+    private ArrayList<Integer> y = new ArrayList<Integer>();
+    private int length;
+    private boolean isSunk;
 
-    public Ship(int shipNo, int x, int y, int length) {
-        this.shipNo = shipNo;
+    public Ship(int x, ArrayList<Integer> y , int length) {
         this.x = x;
         this.y = y;
         this.length = length;
-    }
-
-    public Ship() {
-        this.shipNo = 0;
-        this.x = 0;
-        this.y = 0;
-        this.length = 0;
+        this.isSunk = false;
     }
 
 
     // Getter
-    public int getShipNo() {
-        return this.shipNo;
-    }
     public int getX() {
         return this.x;
     }
-    public int getY() {
+    public ArrayList<Integer> getY() {
         return this.y;
     }
     public int getLength() {
         return this.length;
     }
+    public boolean getIsSunk() {
+        return this.isSunk;
+    }
 
 
     // Setter
-    public void setShipNo(int newShipNo) {
-        this.shipNo = newShipNo;
-    }
     public void setX(int newX) {
         this.x = newX;
     }
-    public void setY(int newY) {
+    public void setY(ArrayList<Integer> newY) {
         this.y = newY;
     }
     public void setLength(int newLength) {
         this.length= newLength;
+    }
+    public void setIsSunk(boolean result) {
+        this.isSunk= result;
+    }
+
+    public static Ship randomGenerateShip(String[][] checkingGrid, int numRows, int numCols){
+        Random randomGenerator = new Random();
+        while (true) {
+            int x = randomGenerator.nextInt(numRows);
+            int y = randomGenerator.nextInt(numCols);
+            int length = randomGenerator.nextInt(3) + 3;
+            ArrayList<Integer> ys = new ArrayList<Integer>();
+            for(int i=0; i < length; i++){
+                ys.add(y+i);
+            }
+            if((x >= 0 && x < numRows) && (y >= 0 && y < numCols-length))
+            {
+                boolean isTaken = false;
+                for(int i : ys){
+                    if(checkingGrid[x][i] != "#"){
+                        isTaken = true;
+                    }
+                }
+                if(isTaken == false){
+                    return new Ship(x, ys, length);
+                }
+            }
+        }
     }
 }
