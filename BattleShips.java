@@ -1,12 +1,13 @@
 import java.util.*;
 
 public class BattleShips {
-    public static void main(String[] args){
+    public void Start() {
         Game game = new Game();
-        Player player = new Player(15);
 
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
+
+        Player player = setUpPlayer();
 
         //Step 1 – Set game difficulty
         setDifficulty(game);
@@ -33,8 +34,15 @@ public class BattleShips {
         gameOver(player);
     }
 
+    public Player setUpPlayer(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter player's name: ");
+        String name = input.nextLine();
 
-    public static void setDifficulty(Game game){
+        return new Player(name, 3);
+    }
+
+    public void setDifficulty(Game game){
         int level = -1;
         do{
             Scanner input = new Scanner(System.in);
@@ -62,7 +70,7 @@ public class BattleShips {
         }while(level != 1 && level != 2 && level != 3);
     }
     
-    public static void Battle(Ocean ocean, Game game, Player player){
+    public void Battle(Ocean ocean, Game game, Player player){
         playGame(ocean, game, player);
         Ocean.printOceanMap(ocean);
         System.out.println();
@@ -73,7 +81,7 @@ public class BattleShips {
     
 
 
-    public static void playGame(Ocean ocean, Game game, Player player){
+    private void playGame(Ocean ocean, Game game, Player player){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
         int numRows = ocean.getRows();
@@ -92,15 +100,15 @@ public class BattleShips {
             {
                 if (displayGrid[x][y] != " " && checkingGrid[x][y] == "c")
                 {
-                    BattleShips.hitShipAction(x, y, ocean, game, player);
+                    hitShipAction(x, y, ocean, game, player);
                 }
                 else if (displayGrid[x][y] != " " && checkingGrid[x][y] == "t")
                 {
-                    BattleShips.hitTrapAction(x, y, ocean, game, player);
+                    hitTrapAction(x, y, ocean, game, player);
                 }
                 else if (displayGrid[x][y] != " " && checkingGrid[x][y] == "p") 
                 {
-                    BattleShips.hitPotionAction(x, y, ocean, game, player);
+                    hitPotionAction(x, y, ocean, game, player);
                 }
                 else if (displayGrid[x][y] == "#") 
                 {
@@ -112,12 +120,14 @@ public class BattleShips {
                     System.out.println("You have chosen that position");
                 }
             }
-            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols))
+            else if ((x < 0 || x >= numRows) || (y < 0 || y >= numCols)){
                 System.out.println("You can't chose position outside the " + numRows + " by " + numCols + " grid");
+            }
+            player.increaseSteps();
         }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));
     }
 
-    public static void hitShipAction(int x, int y, Ocean ocean, Game game, Player player){
+    private void hitShipAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Ship> allShips = game.getAllShips();
         for(Ship ship : allShips){
             int shipX = ship.getX();
@@ -126,22 +136,28 @@ public class BattleShips {
                 game.removeShip(ship, ocean);
             }
         }
-        System.out.println("Boom! You sunk the ship!");
+        System.out.println();
+        System.out.println();
+        System.out.println("                BOOM! You sunk the ship!");
         player.increaseShipDestroyed();
     }
 
-    public static void hitTrapAction(int x, int y, Ocean ocean, Game game, Player player){
+    private void hitTrapAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Trap> allTraps = game.getAllTraps();
         for(Trap trap : allTraps){
             int trapX = trap.getX();
             int trapY = trap.getY();
             if(x == trapX && y == trapY){
                 if(trap instanceof HighTrap){
-                    System.out.println("Oh no, you hit in a High Danger Trap :(");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("          Oh no, you hit in a High Danger Trap :(");
                     HighTrap highTrap = (HighTrap)trap;
                     player.decreaseLife(highTrap.getDamage());
                 }else if (trap instanceof LowTrap){
-                    System.out.println("Oh no, you hit in a Low Danger Trap :(");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("          Oh no, you hit in a Low Danger Trap :(");
                     LowTrap lowTrap = (LowTrap)trap;
                     player.decreaseLife(lowTrap.getDamage());
                 }
@@ -150,7 +166,7 @@ public class BattleShips {
         }
     }
 
-    public static void hitPotionAction(int x, int y, Ocean ocean, Game game, Player player){
+    private void hitPotionAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Potion> allPotions = game.getAllPotions();
 
         for(Potion potion : allPotions){
@@ -158,11 +174,15 @@ public class BattleShips {
             int potionY = potion.getY();
             if(x == potionX && y == potionY){
                 if(potion instanceof LifePotion){
-                    System.out.println("Life Saver Potion, your health increase by 1");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("          Life Saver Potion, your health increase by 1");
                     LifePotion lifePotion = (LifePotion)potion;
                     player.increaseLife(lifePotion.getLife());
                 }else if (potion instanceof ShipPotion){
-                    System.out.println("Ship Reveal Potion");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("          Ship Reveal Potion");
                     game.revealShip(ocean, game);
                 }else if (potion instanceof TrapPotion){
                     System.out.println("Trap Reveal Potion");
@@ -174,14 +194,20 @@ public class BattleShips {
     }
     
 
-    public static void gameOver(Player player){
+    private void gameOver(Player player){
         if(player.getPlayerDestroyedShips() == 5)
         {
             System.out.println("///////");
             System.out.println("|0   0|");
             System.out.println("|  U  |");
             System.out.println("|_____|");
-            System.out.println("Hooray! You won the battle!");
+            System.out.println("Hooray! You won the battle! You took " + player.getStepsTaken() + " steps to complete the game");
+            System.out.println();
+            System.out.println();
+            
+            HighScoreManager hm = new HighScoreManager();
+            hm.addScore(player.getName(), player.getStepsTaken());
+            System.out.print(hm.getHighscoreString());
         }           
         else
         {
@@ -190,6 +216,11 @@ public class BattleShips {
             System.out.println("|  ^  |");
             System.out.println("|_____|");
             System.out.println("Sorry! You lost the battle ");
+            System.out.println();
+            System.out.println();
+
+            HighScoreManager hm = new HighScoreManager();
+            System.out.print(hm.getHighscoreString());
         }
         System.out.println();
     }
