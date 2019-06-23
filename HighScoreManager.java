@@ -4,6 +4,7 @@ import java.io.*;
 public class HighScoreManager {
     // An arraylist of the type "score" we will use to work with the scores inside the class
     private ArrayList<Score> scores;
+    private ScoreComparator comparator;
 
     // The name of the file where the highscores will be saved
     private static final String HIGHSCORE_FILE = "scores.dat";
@@ -46,7 +47,7 @@ public class HighScoreManager {
     }
 
     private void sort() {
-        ScoreComparator comparator = new ScoreComparator();
+        comparator = new ScoreComparator();
         Collections.sort(scores, comparator);
     }
 

@@ -1,13 +1,18 @@
 import java.util.*;
 
 public class BattleShips {
-    public void Start() {
-        Game game = new Game();
+    private Game game;
+    private Player player;
+    private HighScoreManager hm;
+
+
+    public boolean Start() {
+        game = new Game();
 
         System.out.println("**** Welcome to Battle Ships game ****");
         System.out.println("Right now, sea is empty\n");
 
-        Player player = setUpPlayer();
+        player = setUpPlayer();
 
         //Step 1 – Set game difficulty
         setDifficulty(game);
@@ -32,6 +37,8 @@ public class BattleShips {
 
         //Step 5 - Game over
         gameOver(player);
+
+        return true;
     }
 
     public Player setUpPlayer(){
@@ -205,7 +212,7 @@ public class BattleShips {
             System.out.println();
             System.out.println();
             
-            HighScoreManager hm = new HighScoreManager();
+            hm = new HighScoreManager();
             hm.addScore(player.getName(), player.getStepsTaken());
             System.out.print(hm.getHighscoreString());
         }           
