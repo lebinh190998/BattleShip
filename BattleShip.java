@@ -4,6 +4,7 @@ public class BattleShip {
     private Game game;
     private Player player;
     private HighScoreManager hm;
+    private Ocean ocean;
 
 
     public boolean Start() {
@@ -18,7 +19,7 @@ public class BattleShip {
         setDifficulty(game);
 
         //Step 2 – Create the ocean map
-        Ocean ocean = Ocean.createOceanMap(20, 60);
+        ocean = Ocean.createOceanMap(20, 60);
         Ocean.printOceanMap(ocean);
 
         //Step 3 - Deploy ships
@@ -41,7 +42,7 @@ public class BattleShip {
         return true;
     }
 
-    public Player setUpPlayer(){
+    private Player setUpPlayer(){
         Scanner input = new Scanner(System.in);
         System.out.println("Enter player's name: ");
         String name = input.nextLine();
@@ -49,7 +50,7 @@ public class BattleShip {
         return new Player(name, 3);
     }
 
-    public void setDifficulty(Game game){
+    private void setDifficulty(Game game){
         int level = -1;
         do{
             Scanner input = new Scanner(System.in);
@@ -77,7 +78,7 @@ public class BattleShip {
         }while(level != 1 && level != 2 && level != 3);
     }
     
-    public void Battle(Ocean ocean, Game game, Player player){
+    private void Battle(Ocean ocean, Game game, Player player){
         playGame(ocean, game, player);
         Ocean.printOceanMap(ocean);
         System.out.println();
