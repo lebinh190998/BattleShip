@@ -6,7 +6,10 @@ public class BattleShip {
     private HighScoreManager hm;
     private Ocean ocean;
 
-
+    /**
+     * Game start
+     * @return
+     */
     public boolean Start() {
         game = new Game();
 
@@ -42,6 +45,11 @@ public class BattleShip {
         return true;
     }
 
+
+    /**
+     * Setting up for player
+     * @return
+     */
     private Player setUpPlayer(){
         Scanner input = new Scanner(System.in);
         System.out.println("Enter player's name: ");
@@ -50,6 +58,9 @@ public class BattleShip {
         return new Player(name, 3);
     }
 
+    /**
+     * set difficulty
+     */
     private void setDifficulty(Game game){
         int level = -1;
         do{
@@ -78,6 +89,9 @@ public class BattleShip {
         }while(level != 1 && level != 2 && level != 3);
     }
     
+    /**
+     * Battle
+     */
     private void Battle(Ocean ocean, Game game, Player player){
         playGame(ocean, game, player);
         Ocean.printOceanMap(ocean);
@@ -89,6 +103,12 @@ public class BattleShip {
     
 
 
+    /**
+     * play game
+     * @param ocean
+     * @param game
+     * @param player
+     */
     private void playGame(Ocean ocean, Game game, Player player){
         System.out.println("\nYOUR TURN");
         int x = -1, y = -1;
@@ -135,6 +155,14 @@ public class BattleShip {
         }while((x < 0 || x >= numRows) || (y < 0 || y >= numCols));
     }
 
+    /**
+     * hit ship
+     * @param x
+     * @param y
+     * @param ocean
+     * @param game
+     * @param player
+     */
     private void hitShipAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Ship> allShips = game.getAllShips();
         for(Ship ship : allShips){
@@ -150,6 +178,9 @@ public class BattleShip {
         player.increaseShipDestroyed();
     }
 
+    /**
+     * hit trap
+     */
     private void hitTrapAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Trap> allTraps = game.getAllTraps();
         for(Trap trap : allTraps){
@@ -174,6 +205,15 @@ public class BattleShip {
         }
     }
 
+
+    /**
+     * hit Potion
+     * @param x
+     * @param y
+     * @param ocean
+     * @param game
+     * @param player
+     */
     private void hitPotionAction(int x, int y, Ocean ocean, Game game, Player player){
         ArrayList<Potion> allPotions = game.getAllPotions();
 
@@ -201,7 +241,10 @@ public class BattleShip {
         }
     }
     
-
+    /**
+     * Game over
+     * @param player
+     */
     private void gameOver(Player player){
         if(player.getPlayerDestroyedShips() == 5)
         {
