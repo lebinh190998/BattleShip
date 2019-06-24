@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class BattleShips {
+public class BattleShip {
     private Game game;
     private Player player;
     private HighScoreManager hm;
