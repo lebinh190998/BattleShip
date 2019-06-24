@@ -10,7 +10,7 @@ public class BattleShip {
      * Game start
      * @return
      */
-    public boolean Start() {
+    public void Start() {
         game = new Game();
 
         System.out.println("**** Welcome to Battle Ships game ****");
@@ -41,8 +41,6 @@ public class BattleShip {
 
         //Step 5 - Game over
         gameOver(player);
-
-        return true;
     }
 
 
